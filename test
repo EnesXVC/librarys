@@ -1,0 +1,61 @@
+local SolyNotLibrary = {}
+
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+function SolyNotLibrary:CreateUI(games)
+    local loader = Instance.new("ScreenGui", CoreGui)
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+    mainFrame.Position = UDim2.new(0.427, 0, 0.393, 0)
+    mainFrame.Size = UDim2.new(0.2, 0, 0.4, 0)
+    mainFrame.Parent = loader
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Text = "SolyNot Hub"
+    titleLabel.Size = UDim2.new(0.927, 0, 0.112, 0)
+    titleLabel.Position = UDim2.new(0.036, 0, 0.02, 0)
+    titleLabel.Parent = mainFrame
+
+    local holderFrame = Instance.new("Frame")
+    holderFrame.Size = UDim2.new(0.927, 0, 0.782, 0)
+    holderFrame.Position = UDim2.new(0.036, 0, 0.167, 0)
+    holderFrame.Parent = mainFrame
+
+    local scrollingFrame = Instance.new("ScrollingFrame")
+    scrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+    scrollingFrame.Parent = holderFrame
+
+    local uiGridLayout = Instance.new("UIGridLayout")
+    uiGridLayout.CellSize = UDim2.new(0, 165, 0, 60)
+    uiGridLayout.Parent = scrollingFrame
+
+    local function createButton(name, description, link)
+        local button = Instance.new("TextButton")
+        button.Text = name .. " - " .. description
+        button.Size = UDim2.new(1, 0, 0, 60)
+        button.Parent = scrollingFrame
+        button.MouseButton1Click:Connect(function()
+            loadstring(game:HttpGet(link))()
+            loader:Destroy()
+        end)
+    end
+
+    for _, gameData in ipairs(games) do
+        createButton(gameData.name, gameData.description, gameData.link)
+    end
+
+    local closeButton = Instance.new("TextButton")
+    closeButton.Text = "X"
+    closeButton.Size = UDim2.new(0.08, 0, 0.08, 0)
+    closeButton.Position = UDim2.new(0.9, 0, 0.02, 0)
+    closeButton.Parent = mainFrame
+    closeButton.MouseButton1Click:Connect(function()
+        loader:Destroy()
+    end)
+end
+
+return SolyNotLibrary
