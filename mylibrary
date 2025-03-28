@@ -1,19 +1,16 @@
 local EasyLib = {}
 
 function EasyLib:CreateWindow(title)
-    -- UI Elements
     local EasyLib = Instance.new("ScreenGui")
     local Main = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local TopBar = Instance.new("Frame")
-    local TextLabel = Instance.new("TextLabel")
+    local Title = Instance.new("TextLabel")
     local CloseButton = Instance.new("TextButton")
-    local TabContainer = Instance.new("ScrollingFrame")
-    local TabListLayout = Instance.new("UIListLayout")
-    local ContentScrollingFrame = Instance.new("ScrollingFrame") -- Yeni eklenen ScrollingFrame
-    local ContentListLayout = Instance.new("UIListLayout")
+    local TabsContainer = Instance.new("Frame")
+    local ContentContainer = Instance.new("Frame")
 
-    -- Basic Properties
+    -- Main GUI Setup
     EasyLib.Name = "EasyLib"
     EasyLib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     EasyLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -21,54 +18,53 @@ function EasyLib:CreateWindow(title)
     Main.Name = "Main"
     Main.Parent = EasyLib
     Main.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Main.Position = UDim2.new(0.28, 0, 0.23, 0)
-    Main.Size = UDim2.new(0.49, 0, 0.53, 0)
+    Main.Position = UDim2.new(0.3, 0, 0.3, 0)
+    Main.Size = UDim2.new(0.4, 0, 0.4, 0)
+    UICorner.CornerRadius = UDim.new(0, 6)
     UICorner.Parent = Main
 
     -- Top Bar
     TopBar.Name = "TopBar"
     TopBar.Parent = Main
-    TopBar.BackgroundTransparency = 0.96
-    TopBar.Size = UDim2.new(1, 0, 0.17, 0)
+    TopBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    TopBar.Size = UDim2.new(1, 0, 0.12, 0)
 
-    TextLabel.Parent = TopBar
-    TextLabel.Text = title or "EasyLib"
-    TextLabel.Font = Enum.Font.Jura
-    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextLabel.TextScaled = true
+    Title.Name = "Title"
+    Title.Parent = TopBar
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0.03, 0, 0.1, 0)
+    Title.Size = UDim2.new(0.8, 0, 0.8, 0)
+    Title.Font = Enum.Font.Jura
+    Title.Text = title or "EasyLib"
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextScaled = true
+    Title.TextXAlignment = Enum.TextXAlignment.Left
 
+    CloseButton.Name = "CloseButton"
     CloseButton.Parent = TopBar
+    CloseButton.BackgroundTransparency = 1
+    CloseButton.Position = UDim2.new(0.92, 0, 0.1, 0)
+    CloseButton.Size = UDim2.new(0.08, 0, 0.8, 0)
+    CloseButton.Font = Enum.Font.Jura
     CloseButton.Text = "X"
-    CloseButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
     CloseButton.TextScaled = true
-    CloseButton.Size = UDim2.new(0.04, 0, 0.56, 0)
-    CloseButton.Position = UDim2.new(0.96, 0, 0, 0)
 
-    -- Tab Container (Left Side)
-    TabContainer.Parent = Main
-    TabContainer.Size = UDim2.new(0.22, 0, 0.83, 0)
-    TabContainer.Position = UDim2.new(0, 0, 0.17, 0)
-    TabContainer.BackgroundTransparency = 1
-    TabContainer.ScrollBarThickness = 3
+    -- Tabs and Content Area
+    TabsContainer.Name = "TabsContainer"
+    TabsContainer.Parent = Main
+    TabsContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TabsContainer.Position = UDim2.new(0, 0, 0.12, 0)
+    TabsContainer.Size = UDim2.new(0.2, 0, 0.88, 0)
 
-    TabListLayout.Parent = TabContainer
-    TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    TabListLayout.Padding = UDim.new(0, 5)
-
-    -- Content ScrollingFrame (Right Side - Butonlar için)
-    ContentScrollingFrame.Parent = Main
-    ContentScrollingFrame.Size = UDim2.new(0.77, 0, 0.83, 0)
-    ContentScrollingFrame.Position = UDim2.new(0.22, 0, 0.17, 0)
-    ContentScrollingFrame.BackgroundTransparency = 1
-    ContentScrollingFrame.ScrollBarThickness = 3
-    ContentScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y -- Otomatik boyutlandırma
-
-    ContentListLayout.Parent = ContentScrollingFrame
-    ContentListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    ContentListLayout.Padding = UDim.new(0, 5)
+    ContentContainer.Name = "ContentContainer"
+    ContentContainer.Parent = Main
+    ContentContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    ContentContainer.Position = UDim2.new(0.2, 0, 0.12, 0)
+    ContentContainer.Size = UDim2.new(0.8, 0, 0.88, 0)
 
     -- Draggable Window
-    local dragging, dragInput, dragStart, startPos
+    local dragging, dragStart, startPos
     TopBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
@@ -78,82 +74,83 @@ function EasyLib:CreateWindow(title)
     end)
 
     TopBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
             local delta = input.Position - dragStart
             Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 
-    -- Close Button
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
+            dragging = false
+        end
+    end)
+
     CloseButton.MouseButton1Click:Connect(function()
         EasyLib:Destroy()
     end)
 
-    -- Window Methods
+    -- Window Functions
     local window = {}
     local tabs = {}
+    local currentTab = nil
 
     function window:CreateTab(name)
         local TabButton = Instance.new("TextButton")
         TabButton.Name = name
-        TabButton.Parent = TabContainer
-        TabButton.Size = UDim2.new(0.9, 0, 0, 44)
+        TabButton.Parent = TabsContainer
+        TabButton.Size = UDim2.new(1, 0, 0, 35)
         TabButton.Text = name
         TabButton.Font = Enum.Font.Jura
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+        TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         TabButton.AutoButtonColor = false
 
-        local UICorner = Instance.new("UICorner")
-        UICorner.Parent = TabButton
-
-        -- Tab Content Container
-        local TabContent = Instance.new("Frame")
-        TabContent.Name = name .. "_Content"
-        TabContent.Parent = ContentScrollingFrame
-        TabContent.Size = UDim2.new(1, 0, 0, 0) -- AutoSize için
+        local TabContent = Instance.new("ScrollingFrame")
+        TabContent.Name = name .. "Content"
+        TabContent.Parent = ContentContainer
+        TabContent.Size = UDim2.new(1, 0, 1, 0)
         TabContent.BackgroundTransparency = 1
+        TabContent.ScrollBarThickness = 3
         TabContent.Visible = false
+        TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
         local ContentLayout = Instance.new("UIListLayout")
         ContentLayout.Parent = TabContent
         ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
         ContentLayout.Padding = UDim.new(0, 5)
 
-        -- Tab Selection Logic
+        -- Tab Selection
         TabButton.MouseButton1Click:Connect(function()
-            for _, tab in pairs(tabs) do
-                tab.Content.Visible = false
-                tab.Button.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+            if currentTab then
+                currentTab.Visible = false
             end
             TabContent.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            currentTab = TabContent
+            TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            for _, btn in pairs(TabsContainer:GetChildren()) do
+                if btn:IsA("TextButton") and btn ~= TabButton then
+                    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+                end
+            end
         end)
 
         -- Tab Functions
         local tab = {}
-        tab.Button = TabButton
-        tab.Content = TabContent
 
-        -- Add Button
         function tab:AddButton(text, callback)
             local Button = Instance.new("TextButton")
             Button.Name = text
             Button.Parent = TabContent
-            Button.Size = UDim2.new(0.9, 0, 0, 40)
+            Button.Size = UDim2.new(0.95, 0, 0, 40)
             Button.Text = text
             Button.Font = Enum.Font.Jura
             Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Button.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+            Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             Button.AutoButtonColor = true
 
             local UICorner = Instance.new("UICorner")
+            UICorner.CornerRadius = UDim.new(0, 4)
             UICorner.Parent = Button
 
             Button.MouseButton1Click:Connect(function()
@@ -163,37 +160,34 @@ function EasyLib:CreateWindow(title)
             return Button
         end
 
-        -- Add Toggle
         function tab:AddToggle(text, default, callback)
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Name = text .. "_Toggle"
+            ToggleFrame.Name = text .. "Toggle"
             ToggleFrame.Parent = TabContent
-            ToggleFrame.Size = UDim2.new(0.9, 0, 0, 40)
+            ToggleFrame.Size = UDim2.new(0.95, 0, 0, 40)
             ToggleFrame.BackgroundTransparency = 1
 
             local ToggleButton = Instance.new("TextButton")
             ToggleButton.Name = "ToggleButton"
             ToggleButton.Parent = ToggleFrame
             ToggleButton.Size = UDim2.new(0.7, 0, 1, 0)
-            ToggleButton.Text = text
+            ToggleButton.Text = "  " .. text
             ToggleButton.Font = Enum.Font.Jura
             ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ToggleButton.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
             ToggleButton.AutoButtonColor = false
-
-            local UICorner = Instance.new("UICorner")
-            UICorner.Parent = ToggleButton
 
             local ToggleBox = Instance.new("Frame")
             ToggleBox.Name = "ToggleBox"
             ToggleBox.Parent = ToggleFrame
-            ToggleBox.Size = UDim2.new(0.2, 0, 0.7, 0)
-            ToggleBox.Position = UDim2.new(0.75, 0, 0.15, 0)
-            ToggleBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            ToggleBox.Size = UDim2.new(0.2, 0, 0.6, 0)
+            ToggleBox.Position = UDim2.new(0.75, 0, 0.2, 0)
+            ToggleBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 
-            local UICorner2 = Instance.new("UICorner")
-            UICorner2.Parent = ToggleBox
+            local UICorner = Instance.new("UICorner")
+            UICorner.CornerRadius = UDim.new(0, 4)
+            UICorner.Parent = ToggleBox
 
             local ToggleTick = Instance.new("TextLabel")
             ToggleTick.Name = "Tick"
@@ -223,24 +217,19 @@ function EasyLib:CreateWindow(title)
             end)
 
             return {
-                Set = function(self, value)
-                    isToggled = value
-                    updateToggle()
-                end,
-                Get = function(self)
-                    return isToggled
-                end
+                Set = function(value) isToggled = value updateToggle() end,
+                Get = function() return isToggled end
             }
         end
 
-        table.insert(tabs, tab)
-
         -- Select first tab by default
-        if #tabs == 1 then
+        if #tabs == 0 then
             TabContent.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            currentTab = TabContent
+            TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         end
 
+        table.insert(tabs, tab)
         return tab
     end
 
