@@ -1,6 +1,6 @@
-_G.Main =  {}
+Simplelib =  {}
 
-function  _G.Main:New(Title)
+function  Simplelib:New(Title)
 	local EasyLibrary = Instance.new("ScreenGui")
 	local Frame = Instance.new("Frame")
 	local Frame_2 = Instance.new("Frame")
@@ -116,4 +116,4 @@ function  _G.Main:New(Title)
 	
 end
 
-return _G.Main
+return Simplelib
