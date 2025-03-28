@@ -1,124 +1,225 @@
-local EasyLib = {}
+local CoolDarkLib = {}
 
-function EasyLib:CreateWindow(title)
-    local EasyLib = Instance.new("ScreenGui")
-    local Main = Instance.new("Frame")
+function CoolDarkLib:CreateWindow(title)
+    -- Main GUI Elements
+    local CoolDarkLib = Instance.new("ScreenGui")
+    local mainFrame = Instance.new("Frame")
+    local mainplayer = Instance.new("Frame")
+    local Player = Instance.new("Frame")
+    local PlayerImage = Instance.new("ImageLabel")
     local UICorner = Instance.new("UICorner")
-    local TopBar = Instance.new("Frame")
-    local Title = Instance.new("TextLabel")
+    local PlayerUsername = Instance.new("TextLabel")
+    local UICorner_2 = Instance.new("UICorner")
+    local Topbar = Instance.new("Frame")
     local CloseButton = Instance.new("TextButton")
-    local TabsContainer = Instance.new("Frame")
-    local ContentContainer = Instance.new("Frame")
+    local MinimizeButton = Instance.new("TextButton")
+    local TitleLabel = Instance.new("TextLabel")
+    local UICorner_3 = Instance.new("UICorner")
+    local UICorner_4 = Instance.new("UICorner")
+    local Tabs = Instance.new("ScrollingFrame")
+    local SearchBox = Instance.new("TextBox")
+    local UICorner_5 = Instance.new("UICorner")
+    local Main = Instance.new("ScrollingFrame")
+    local UIListLayout = Instance.new("UIListLayout")
 
-    -- Main GUI Setup
-    EasyLib.Name = "EasyLib"
-    EasyLib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    EasyLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    -- Basic Properties
+    CoolDarkLib.Name = "CoolDarkLib"
+    CoolDarkLib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    CoolDarkLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-    Main.Name = "Main"
-    Main.Parent = EasyLib
-    Main.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-    Main.Size = UDim2.new(0.4, 0, 0.4, 0)
-    UICorner.CornerRadius = UDim.new(0, 6)
-    UICorner.Parent = Main
+    mainFrame.Name = "mainFrame"
+    mainFrame.Parent = CoolDarkLib
+    mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    mainFrame.Position = UDim2.new(0.28, 0, 0.22, 0)
+    mainFrame.Size = UDim2.new(0.44, 0, 0.55, 0)
+    UICorner_4.Parent = mainFrame
+
+    -- Player Info Section
+    mainplayer.Name = "mainplayer"
+    mainplayer.Parent = mainFrame
+    mainplayer.BackgroundColor3 = Color3.fromRGB(27, 27, 27)
+    mainplayer.Position = UDim2.new(0.27, 0, 0, 0)
+    mainplayer.Size = UDim2.new(0.73, 0, 1, 0)
+    UICorner_2.Parent = mainplayer
+
+    Player.Name = "Player"
+    Player.Parent = mainplayer
+    Player.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+    Player.Position = UDim2.new(-0.37, 0, 0.85, 0)
+    Player.Size = UDim2.new(0.37, 0, 0.15, 0)
+
+    PlayerImage.Name = "PlayerImage"
+    PlayerImage.Parent = Player
+    PlayerImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    PlayerImage.Position = UDim2.new(0.06, 0, 0.17, 0)
+    PlayerImage.Size = UDim2.new(0.19, 0, 0.7, 0)
+    PlayerImage.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+    UICorner.Parent = PlayerImage
+
+    PlayerUsername.Name = "PlayerUsername"
+    PlayerUsername.Parent = Player
+    PlayerUsername.BackgroundTransparency = 1
+    PlayerUsername.Position = UDim2.new(0.25, 0, 0.28, 0)
+    PlayerUsername.Size = UDim2.new(0.63, 0, 0.43, 0)
+    PlayerUsername.Font = Enum.Font.Gotham
+    PlayerUsername.Text = game.Players.LocalPlayer.Name
+    PlayerUsername.TextColor3 = Color3.fromRGB(255, 255, 255)
+    PlayerUsername.TextScaled = true
+    PlayerUsername.TextTransparency = 0.3
 
     -- Top Bar
-    TopBar.Name = "TopBar"
-    TopBar.Parent = Main
-    TopBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    TopBar.Size = UDim2.new(1, 0, 0.12, 0)
+    Topbar.Name = "Topbar"
+    Topbar.Parent = mainFrame
+    Topbar.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+    Topbar.Size = UDim2.new(1, 0, 0.1, 0)
+    UICorner_3.Parent = Topbar
 
-    Title.Name = "Title"
-    Title.Parent = TopBar
-    Title.BackgroundTransparency = 1
-    Title.Position = UDim2.new(0.03, 0, 0.1, 0)
-    Title.Size = UDim2.new(0.8, 0, 0.8, 0)
-    Title.Font = Enum.Font.Jura
-    Title.Text = title or "EasyLib"
-    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Title.TextScaled = true
-    Title.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Name = "TitleLabel"
+    TitleLabel.Parent = Topbar
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Size = UDim2.new(0.32, 0, 1, 0)
+    TitleLabel.Font = Enum.Font.Gotham
+    TitleLabel.Text = title or "CoolDarkLib"
+    TitleLabel.TextColor3 = Color3.fromRGB(122, 122, 122)
+    TitleLabel.TextScaled = true
 
     CloseButton.Name = "CloseButton"
-    CloseButton.Parent = TopBar
+    CloseButton.Parent = Topbar
     CloseButton.BackgroundTransparency = 1
-    CloseButton.Position = UDim2.new(0.92, 0, 0.1, 0)
-    CloseButton.Size = UDim2.new(0.08, 0, 0.8, 0)
+    CloseButton.Position = UDim2.new(0.95, 0, 0, 0)
+    CloseButton.Size = UDim2.new(0.05, 0, 1, 0)
     CloseButton.Font = Enum.Font.Jura
     CloseButton.Text = "X"
-    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+    CloseButton.TextColor3 = Color3.fromRGB(189, 189, 189)
     CloseButton.TextScaled = true
 
-    -- Tabs and Content Area
-    TabsContainer.Name = "TabsContainer"
-    TabsContainer.Parent = Main
-    TabsContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    TabsContainer.Position = UDim2.new(0, 0, 0.12, 0)
-    TabsContainer.Size = UDim2.new(0.2, 0, 0.88, 0)
+    MinimizeButton.Name = "MinimizeButton"
+    MinimizeButton.Parent = Topbar
+    MinimizeButton.BackgroundTransparency = 1
+    MinimizeButton.Position = UDim2.new(0.89, 0, 0, 0)
+    MinimizeButton.Size = UDim2.new(0.05, 0, 1, 0)
+    MinimizeButton.Font = Enum.Font.Jura
+    MinimizeButton.Text = "-"
+    MinimizeButton.TextColor3 = Color3.fromRGB(189, 189, 189)
+    MinimizeButton.TextScaled = true
 
-    ContentContainer.Name = "ContentContainer"
-    ContentContainer.Parent = Main
-    ContentContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    ContentContainer.Position = UDim2.new(0.2, 0, 0.12, 0)
-    ContentContainer.Size = UDim2.new(0.8, 0, 0.88, 0)
+    -- Tabs Area
+    Tabs.Name = "Tabs"
+    Tabs.Parent = mainFrame
+    Tabs.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Tabs.Position = UDim2.new(0.002, 0, 0.1, 0)
+    Tabs.Size = UDim2.new(0.27, 0, 0.75, 0)
+    Tabs.ScrollBarThickness = 9
+
+    -- Search Box
+    SearchBox.Name = "SearchBox"
+    SearchBox.Parent = mainFrame
+    SearchBox.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+    SearchBox.Position = UDim2.new(0.04, 0, 0.12, 0)
+    SearchBox.Size = UDim2.new(0.19, 0, 0.09, 0)
+    SearchBox.Font = Enum.Font.SourceSansItalic
+    SearchBox.PlaceholderText = "Search-Bar"
+    SearchBox.Text = ""
+    SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SearchBox.TextSize = 14
+    UICorner_5.Parent = SearchBox
+
+    -- Main Content Area
+    Main.Name = "Main"
+    Main.Parent = mainFrame
+    Main.BackgroundTransparency = 1
+    Main.Position = UDim2.new(0.27, 0, 0.1, 0)
+    Main.Size = UDim2.new(0.73, 0, 0.9, 0)
+    Main.ScrollBarThickness = 9
+
+    UIListLayout.Parent = Main
+    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 13)
 
     -- Draggable Window
-    local dragging, dragStart, startPos
-    TopBar.InputBegan:Connect(function(input)
+    local dragging, dragInput, dragStart, startPos
+    Topbar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
-            startPos = Main.Position
+            startPos = mainFrame.Position
         end
     end)
 
-    TopBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-            local delta = input.Position - dragStart
-            Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    Topbar.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
         end
     end)
 
     game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
-            dragging = false
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 
+    -- Close and Minimize Functionality
     CloseButton.MouseButton1Click:Connect(function()
-        EasyLib:Destroy()
+        CoolDarkLib:Destroy()
     end)
 
-    -- Window Functions
+    MinimizeButton.MouseButton1Click:Connect(function()
+        mainplayer.Visible = not mainplayer.Visible
+        Main.Visible = not Main.Visible
+        Tabs.Visible = not Tabs.Visible
+        SearchBox.Visible = not SearchBox.Visible
+        Player.Visible = not Player.Visible
+        
+        if mainplayer.Visible then
+            MinimizeButton.Text = "-"
+            mainFrame.Size = UDim2.new(0.44, 0, 0.55, 0)
+        else
+            MinimizeButton.Text = "+"
+            mainFrame.Size = UDim2.new(0.44, 0, 0.1, 0)
+        end
+    end)
+
+    -- Window Methods
     local window = {}
     local tabs = {}
     local currentTab = nil
 
-    function window:CreateTab(name)
+    function window:CreateTab(name, icon)
         local TabButton = Instance.new("TextButton")
         TabButton.Name = name
-        TabButton.Parent = TabsContainer
-        TabButton.Size = UDim2.new(1, 0, 0, 35)
+        TabButton.Parent = Tabs
+        TabButton.Size = UDim2.new(0, 123, 0, 20)
         TabButton.Text = name
-        TabButton.Font = Enum.Font.Jura
-        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        TabButton.AutoButtonColor = false
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.TextColor3 = Color3.fromRGB(167, 167, 167)
+        TabButton.TextScaled = true
+        TabButton.BackgroundTransparency = 1
 
-        local TabContent = Instance.new("ScrollingFrame")
-        TabContent.Name = name .. "Content"
-        TabContent.Parent = ContentContainer
-        TabContent.Size = UDim2.new(1, 0, 1, 0)
+        if icon then
+            local TabIcon = Instance.new("ImageLabel")
+            TabIcon.Name = "Icon"
+            TabIcon.Parent = TabButton
+            TabIcon.Size = UDim2.new(0, 28, 0, 20)
+            TabIcon.Image = icon
+            TabButton.TextXAlignment = Enum.TextXAlignment.Left
+            TabButton.PaddingLeft = UDim.new(0, 30)
+        end
+
+        -- Tab Content
+        local TabContent = Instance.new("Frame")
+        TabContent.Name = name.."Content"
+        TabContent.Parent = Main
         TabContent.BackgroundTransparency = 1
-        TabContent.ScrollBarThickness = 3
+        TabContent.Size = UDim2.new(1, 0, 0, 0) -- Auto size
         TabContent.Visible = false
-        TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
         local ContentLayout = Instance.new("UIListLayout")
         ContentLayout.Parent = TabContent
+        ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
         ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        ContentLayout.Padding = UDim.new(0, 5)
+        ContentLayout.Padding = UDim.new(0, 13)
 
         -- Tab Selection
         TabButton.MouseButton1Click:Connect(function()
@@ -127,12 +228,14 @@ function EasyLib:CreateWindow(title)
             end
             TabContent.Visible = true
             currentTab = TabContent
-            TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            for _, btn in pairs(TabsContainer:GetChildren()) do
-                if btn:IsA("TextButton") and btn ~= TabButton then
-                    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            
+            -- Update tab button appearance
+            for _, btn in pairs(Tabs:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    btn.TextColor3 = Color3.fromRGB(167, 167, 167)
                 end
             end
+            TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         end)
 
         -- Tab Functions
@@ -142,16 +245,18 @@ function EasyLib:CreateWindow(title)
             local Button = Instance.new("TextButton")
             Button.Name = text
             Button.Parent = TabContent
-            Button.Size = UDim2.new(0.95, 0, 0, 40)
+            Button.Size = UDim2.new(0, 278, 0, 44)
             Button.Text = text
             Button.Font = Enum.Font.Jura
-            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            Button.AutoButtonColor = true
-
-            local UICorner = Instance.new("UICorner")
-            UICorner.CornerRadius = UDim.new(0, 4)
-            UICorner.Parent = Button
+            Button.TextColor3 = Color3.fromRGB(223, 223, 223)
+            Button.TextScaled = true
+            Button.TextStrokeColor3 = Color3.fromRGB(71, 71, 71)
+            Button.TextStrokeTransparency = 0
+            Button.TextTransparency = 0.2
+            Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            
+            local ButtonCorner = Instance.new("UICorner")
+            ButtonCorner.Parent = Button
 
             Button.MouseButton1Click:Connect(function()
                 if callback then callback() end
@@ -162,47 +267,40 @@ function EasyLib:CreateWindow(title)
 
         function tab:AddToggle(text, default, callback)
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Name = text .. "Toggle"
+            ToggleFrame.Name = text.."Toggle"
             ToggleFrame.Parent = TabContent
-            ToggleFrame.Size = UDim2.new(0.95, 0, 0, 40)
+            ToggleFrame.Size = UDim2.new(0, 278, 0, 44)
             ToggleFrame.BackgroundTransparency = 1
 
             local ToggleButton = Instance.new("TextButton")
             ToggleButton.Name = "ToggleButton"
             ToggleButton.Parent = ToggleFrame
-            ToggleButton.Size = UDim2.new(0.7, 0, 1, 0)
-            ToggleButton.Text = "  " .. text
+            ToggleButton.Size = UDim2.new(1, 0, 1, 0)
+            ToggleButton.Text = text
             ToggleButton.Font = Enum.Font.Jura
-            ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            ToggleButton.TextColor3 = Color3.fromRGB(223, 223, 223)
+            ToggleButton.TextScaled = true
+            ToggleButton.TextStrokeColor3 = Color3.fromRGB(71, 71, 71)
+            ToggleButton.TextStrokeTransparency = 0
+            ToggleButton.TextTransparency = 0.2
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
-            ToggleButton.AutoButtonColor = false
+            ToggleButton.PaddingLeft = UDim.new(0, 15)
 
-            local ToggleBox = Instance.new("Frame")
-            ToggleBox.Name = "ToggleBox"
-            ToggleBox.Parent = ToggleFrame
-            ToggleBox.Size = UDim2.new(0.2, 0, 0.6, 0)
-            ToggleBox.Position = UDim2.new(0.75, 0, 0.2, 0)
-            ToggleBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-
-            local UICorner = Instance.new("UICorner")
-            UICorner.CornerRadius = UDim.new(0, 4)
-            UICorner.Parent = ToggleBox
-
-            local ToggleTick = Instance.new("TextLabel")
-            ToggleTick.Name = "Tick"
-            ToggleTick.Parent = ToggleBox
-            ToggleTick.Size = UDim2.new(1, 0, 1, 0)
-            ToggleTick.Text = default and "✓" or ""
-            ToggleTick.Font = Enum.Font.Jura
-            ToggleTick.TextColor3 = Color3.fromRGB(0, 255, 0)
-            ToggleTick.TextScaled = true
-            ToggleTick.BackgroundTransparency = 1
+            local ToggleIndicator = Instance.new("Frame")
+            ToggleIndicator.Name = "Indicator"
+            ToggleIndicator.Parent = ToggleButton
+            ToggleIndicator.Size = UDim2.new(0, 30, 0, 30)
+            ToggleIndicator.Position = UDim2.new(0.9, 0, 0.15, 0)
+            ToggleIndicator.BackgroundColor3 = default and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(60, 60, 60)
+            
+            local ToggleCorner = Instance.new("UICorner")
+            ToggleCorner.Parent = ToggleIndicator
 
             local isToggled = default or false
 
             local function updateToggle()
-                ToggleTick.Text = isToggled and "✓" or ""
+                ToggleIndicator.BackgroundColor3 = isToggled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(60, 60, 60)
                 if callback then callback(isToggled) end
             end
 
@@ -211,14 +309,14 @@ function EasyLib:CreateWindow(title)
                 updateToggle()
             end)
 
-            ToggleBox.MouseButton1Click:Connect(function()
-                isToggled = not isToggled
-                updateToggle()
-            end)
-
             return {
-                Set = function(value) isToggled = value updateToggle() end,
-                Get = function() return isToggled end
+                Set = function(self, value)
+                    isToggled = value
+                    updateToggle()
+                end,
+                Get = function(self)
+                    return isToggled
+                end
             }
         end
 
@@ -226,14 +324,32 @@ function EasyLib:CreateWindow(title)
         if #tabs == 0 then
             TabContent.Visible = true
             currentTab = TabContent
-            TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
 
         table.insert(tabs, tab)
         return tab
     end
 
+    -- Set player info
+    local function updatePlayerInfo()
+        local player = game.Players.LocalPlayer
+        PlayerUsername.Text = player.Name
+        
+        -- Set player image (thumbnail)
+        local userId = player.UserId
+        local thumbType = Enum.ThumbnailType.HeadShot
+        local thumbSize = Enum.ThumbnailSize.Size420x420
+        local content, isReady = game:GetService("Players"):GetUserThumbnailAsync(userId, thumbType, thumbSize)
+        
+        if isReady then
+            PlayerImage.Image = content
+        end
+    end
+
+    updatePlayerInfo()
+
     return window
 end
 
-return EasyLib
+return CoolDarkLib
