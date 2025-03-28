@@ -1,247 +1,249 @@
 local EasyLib = {}
 
--- Initialize the library
 function EasyLib:CreateWindow(title)
-    -- Create main GUI elements
+    -- UI Elements
     local EasyLib = Instance.new("ScreenGui")
     local Main = Instance.new("Frame")
-    local Frame = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local TopBar = Instance.new("Frame")
     local TextLabel = Instance.new("TextLabel")
     local CloseButton = Instance.new("TextButton")
-    local ScrollingFrame = Instance.new("ScrollingFrame")
-    local UIListLayout = Instance.new("UIListLayout")
-    
-    -- Basic properties
+    local TabContainer = Instance.new("ScrollingFrame")
+    local TabListLayout = Instance.new("UIListLayout")
+    local ContentScrollingFrame = Instance.new("ScrollingFrame") -- Yeni eklenen ScrollingFrame
+    local ContentListLayout = Instance.new("UIListLayout")
+
+    -- Basic Properties
     EasyLib.Name = "EasyLib"
     EasyLib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     EasyLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
+
     Main.Name = "Main"
     Main.Parent = EasyLib
     Main.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Main.BorderSizePixel = 0
     Main.Position = UDim2.new(0.28, 0, 0.23, 0)
     Main.Size = UDim2.new(0.49, 0, 0.53, 0)
     UICorner.Parent = Main
-    
-    -- Top bar
+
+    -- Top Bar
     TopBar.Name = "TopBar"
     TopBar.Parent = Main
     TopBar.BackgroundTransparency = 0.96
     TopBar.Size = UDim2.new(1, 0, 0.17, 0)
-    
+
     TextLabel.Parent = TopBar
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.Size = UDim2.new(0.63, 0, 0.96, 0)
-    TextLabel.Font = Enum.Font.Jura
     TextLabel.Text = title or "EasyLib"
+    TextLabel.Font = Enum.Font.Jura
     TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TextLabel.TextScaled = true
-    TextLabel.TextStrokeColor3 = Color3.fromRGB(131, 131, 131)
-    
-    CloseButton.Name = "CloseButton"
+
     CloseButton.Parent = TopBar
-    CloseButton.BackgroundTransparency = 1
-    CloseButton.Position = UDim2.new(0.96, 0, 0, 0)
-    CloseButton.Size = UDim2.new(0.04, 0, 0.56, 0)
-    CloseButton.Font = Enum.Font.Arial
     CloseButton.Text = "X"
     CloseButton.TextColor3 = Color3.fromRGB(255, 0, 0)
     CloseButton.TextScaled = true
-    
-    -- Tab area
-    ScrollingFrame.Parent = Main
-    ScrollingFrame.BackgroundTransparency = 1
-    ScrollingFrame.Position = UDim2.new(0, 0, 0.17, 0)
-    ScrollingFrame.Size = UDim2.new(0.22, 0, 0.83, 0)
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    ScrollingFrame.ScrollBarThickness = 3
-    
-    UIListLayout.Parent = ScrollingFrame
-    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Padding = UDim.new(0, 5)
-    
-    -- Content area
-    Frame.Parent = Main
-    Frame.BackgroundTransparency = 0.98
-    Frame.Position = UDim2.new(0.22, 0, 0.17, 0)
-    Frame.Size = UDim2.new(0.77, 0, 0.83, 0)
-    
-    local contentListLayout = Instance.new("UIListLayout")
-    contentListLayout.Parent = Frame
-    contentListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    contentListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    contentListLayout.Padding = UDim.new(0, 5)
-    
-    -- Window methods
-    local window = {}
-    local tabs = {}
-    local currentTab = nil
-    
-    -- Close button functionality
-    CloseButton.MouseButton1Click:Connect(function()
-        EasyLib:Destroy()
-    end)
-    
-    -- Make window draggable
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-    
-    local function updateInput(input)
-        local delta = input.Position - dragStart
-        Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-    
+    CloseButton.Size = UDim2.new(0.04, 0, 0.56, 0)
+    CloseButton.Position = UDim2.new(0.96, 0, 0, 0)
+
+    -- Tab Container (Left Side)
+    TabContainer.Parent = Main
+    TabContainer.Size = UDim2.new(0.22, 0, 0.83, 0)
+    TabContainer.Position = UDim2.new(0, 0, 0.17, 0)
+    TabContainer.BackgroundTransparency = 1
+    TabContainer.ScrollBarThickness = 3
+
+    TabListLayout.Parent = TabContainer
+    TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabListLayout.Padding = UDim.new(0, 5)
+
+    -- Content ScrollingFrame (Right Side - Butonlar için)
+    ContentScrollingFrame.Parent = Main
+    ContentScrollingFrame.Size = UDim2.new(0.77, 0, 0.83, 0)
+    ContentScrollingFrame.Position = UDim2.new(0.22, 0, 0.17, 0)
+    ContentScrollingFrame.BackgroundTransparency = 1
+    ContentScrollingFrame.ScrollBarThickness = 3
+    ContentScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y -- Otomatik boyutlandırma
+
+    ContentListLayout.Parent = ContentScrollingFrame
+    ContentListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    ContentListLayout.Padding = UDim.new(0, 5)
+
+    -- Draggable Window
+    local dragging, dragInput, dragStart, startPos
     TopBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = Main.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
         end
     end)
-    
+
     TopBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
             dragInput = input
         end
     end)
-    
+
     game:GetService("UserInputService").InputChanged:Connect(function(input)
         if input == dragInput and dragging then
-            updateInput(input)
+            local delta = input.Position - dragStart
+            Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
-    
-    -- Create a new tab
+
+    -- Close Button
+    CloseButton.MouseButton1Click:Connect(function()
+        EasyLib:Destroy()
+    end)
+
+    -- Window Methods
+    local window = {}
+    local tabs = {}
+
     function window:CreateTab(name)
-        local Tab = Instance.new("TextButton")
-        Tab.Name = "Tab_"..name
-        Tab.Parent = ScrollingFrame
-        Tab.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-        Tab.Size = UDim2.new(0.9, 0, 0, 44)
-        Tab.Font = Enum.Font.Jura
-        Tab.Text = name
-        Tab.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Tab.TextScaled = true
-        Tab.TextXAlignment = Enum.TextXAlignment.Left
-        Tab.AutoButtonColor = false
-        
-        local tabCorner = Instance.new("UICorner")
-        tabCorner.Parent = Tab
-        
-        -- Tab hover effects
-        Tab.MouseEnter:Connect(function()
-            game:GetService("TweenService"):Create(Tab, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
-        end)
-        
-        Tab.MouseLeave:Connect(function()
-            if currentTab and currentTab.Name ~= name then
-                game:GetService("TweenService"):Create(Tab, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(24, 24, 24)}):Play()
-            end
-        end)
-        
-        -- Update scrolling frame canvas size
-        local function updateCanvasSize()
-            ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
-        end
-        updateCanvasSize()
-        UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
-        
-        -- Create tab content
-        local tabContent = {
-            Name = name,
-            Buttons = {},
-            Container = Instance.new("Frame")
-        }
-        
-        tabContent.Container.Name = name.."_Container"
-        tabContent.Container.Parent = Frame
-        tabContent.Container.BackgroundTransparency = 1
-        tabContent.Container.Size = UDim2.new(1, 0, 1, 0)
-        tabContent.Container.Visible = false
-        
-        local containerListLayout = Instance.new("UIListLayout")
-        containerListLayout.Parent = tabContent.Container
-        containerListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        containerListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        containerListLayout.Padding = UDim.new(0, 5)
-        
-        -- Tab selection functionality
-        local function selectTab()
-            -- Hide all containers
+        local TabButton = Instance.new("TextButton")
+        TabButton.Name = name
+        TabButton.Parent = TabContainer
+        TabButton.Size = UDim2.new(0.9, 0, 0, 44)
+        TabButton.Text = name
+        TabButton.Font = Enum.Font.Jura
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TabButton.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+        TabButton.AutoButtonColor = false
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.Parent = TabButton
+
+        -- Tab Content Container
+        local TabContent = Instance.new("Frame")
+        TabContent.Name = name .. "_Content"
+        TabContent.Parent = ContentScrollingFrame
+        TabContent.Size = UDim2.new(1, 0, 0, 0) -- AutoSize için
+        TabContent.BackgroundTransparency = 1
+        TabContent.Visible = false
+
+        local ContentLayout = Instance.new("UIListLayout")
+        ContentLayout.Parent = TabContent
+        ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        ContentLayout.Padding = UDim.new(0, 5)
+
+        -- Tab Selection Logic
+        TabButton.MouseButton1Click:Connect(function()
             for _, tab in pairs(tabs) do
-                tab.Container.Visible = false
-                if tab.Button then
-                    game:GetService("TweenService"):Create(tab.Button, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(24, 24, 24)}):Play()
-                end
+                tab.Content.Visible = false
+                tab.Button.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
             end
-            
-            -- Show this tab's container
-            tabContent.Container.Visible = true
-            game:GetService("TweenService"):Create(Tab, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
-            
-            currentTab = tabContent
+            TabContent.Visible = true
+            TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        end)
+
+        -- Tab Functions
+        local tab = {}
+        tab.Button = TabButton
+        tab.Content = TabContent
+
+        -- Add Button
+        function tab:AddButton(text, callback)
+            local Button = Instance.new("TextButton")
+            Button.Name = text
+            Button.Parent = TabContent
+            Button.Size = UDim2.new(0.9, 0, 0, 40)
+            Button.Text = text
+            Button.Font = Enum.Font.Jura
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+            Button.AutoButtonColor = true
+
+            local UICorner = Instance.new("UICorner")
+            UICorner.Parent = Button
+
+            Button.MouseButton1Click:Connect(function()
+                if callback then callback() end
+            end)
+
+            return Button
         end
-        
-        Tab.MouseButton1Click:Connect(selectTab)
-        
-        -- Add button to tab
-        function tabContent:AddButton(buttonName, callback)
-            local TextButton = Instance.new("TextButton")
-            TextButton.Name = buttonName
-            TextButton.Parent = tabContent.Container
-            TextButton.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-            TextButton.Size = UDim2.new(0.9, 0, 0, 40)
-            TextButton.Font = Enum.Font.Jura
-            TextButton.Text = buttonName
-            TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-            TextButton.TextScaled = true
-            TextButton.TextXAlignment = Enum.TextXAlignment.Left
-            
-            local buttonCorner = Instance.new("UICorner")
-            buttonCorner.Parent = TextButton
-            
-            -- Button hover effects
-            TextButton.MouseEnter:Connect(function()
-                game:GetService("TweenService"):Create(TextButton, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
+
+        -- Add Toggle
+        function tab:AddToggle(text, default, callback)
+            local ToggleFrame = Instance.new("Frame")
+            ToggleFrame.Name = text .. "_Toggle"
+            ToggleFrame.Parent = TabContent
+            ToggleFrame.Size = UDim2.new(0.9, 0, 0, 40)
+            ToggleFrame.BackgroundTransparency = 1
+
+            local ToggleButton = Instance.new("TextButton")
+            ToggleButton.Name = "ToggleButton"
+            ToggleButton.Parent = ToggleFrame
+            ToggleButton.Size = UDim2.new(0.7, 0, 1, 0)
+            ToggleButton.Text = text
+            ToggleButton.Font = Enum.Font.Jura
+            ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+            ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
+            ToggleButton.AutoButtonColor = false
+
+            local UICorner = Instance.new("UICorner")
+            UICorner.Parent = ToggleButton
+
+            local ToggleBox = Instance.new("Frame")
+            ToggleBox.Name = "ToggleBox"
+            ToggleBox.Parent = ToggleFrame
+            ToggleBox.Size = UDim2.new(0.2, 0, 0.7, 0)
+            ToggleBox.Position = UDim2.new(0.75, 0, 0.15, 0)
+            ToggleBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+            local UICorner2 = Instance.new("UICorner")
+            UICorner2.Parent = ToggleBox
+
+            local ToggleTick = Instance.new("TextLabel")
+            ToggleTick.Name = "Tick"
+            ToggleTick.Parent = ToggleBox
+            ToggleTick.Size = UDim2.new(1, 0, 1, 0)
+            ToggleTick.Text = default and "✓" or ""
+            ToggleTick.Font = Enum.Font.Jura
+            ToggleTick.TextColor3 = Color3.fromRGB(0, 255, 0)
+            ToggleTick.TextScaled = true
+            ToggleTick.BackgroundTransparency = 1
+
+            local isToggled = default or false
+
+            local function updateToggle()
+                ToggleTick.Text = isToggled and "✓" or ""
+                if callback then callback(isToggled) end
+            end
+
+            ToggleButton.MouseButton1Click:Connect(function()
+                isToggled = not isToggled
+                updateToggle()
             end)
-            
-            TextButton.MouseLeave:Connect(function()
-                game:GetService("TweenService"):Create(TextButton, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(24, 24, 24)}):Play()
+
+            ToggleBox.MouseButton1Click:Connect(function()
+                isToggled = not isToggled
+                updateToggle()
             end)
-            
-            TextButton.MouseButton1Click:Connect(function()
-                if callback then
-                    callback()
+
+            return {
+                Set = function(self, value)
+                    isToggled = value
+                    updateToggle()
+                end,
+                Get = function(self)
+                    return isToggled
                 end
-            end)
-            
-            table.insert(tabContent.Buttons, TextButton)
-            return TextButton
+            }
         end
-        
-        tabContent.Button = Tab
-        table.insert(tabs, tabContent)
-        
+
+        table.insert(tabs, tab)
+
         -- Select first tab by default
         if #tabs == 1 then
-            selectTab()
+            TabContent.Visible = true
+            TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         end
-        
-        return tabContent
+
+        return tab
     end
-    
+
     return window
 end
 
