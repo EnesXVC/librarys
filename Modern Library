@@ -1,0 +1,390 @@
+local ModernTab = {}
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Varsayılan ayarlar
+ModernTab.Settings = {
+    MainColor = Color3.fromRGB(25, 25, 25),
+    Transparency = 0.25,
+    Size = UDim2.new(0, 350, 0, 300),
+    Position = UDim2.new(0.5, -175, 0.5, -150),
+    Title = "MODERN TAB",
+    ToggleKey = Enum.KeyCode.Y,
+    Notifications = true
+}
+
+-- UI elementleri tutacak tablo
+ModernTab.Elements = {}
+
+-- Notify fonksiyonu
+function ModernTab:Notify(title, message, duration)
+    if not self.Settings.Notifications then return end
+    
+    local notifyGui = Instance.new("ScreenGui")
+    notifyGui.Name = "Notification"
+    notifyGui.Parent = PlayerGui
+    
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 250, 0, 80)
+    frame.Position = UDim2.new(1, -260, 1, -90)
+    frame.AnchorPoint = Vector2.new(1, 1)
+    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    frame.BackgroundTransparency = 0.3
+    frame.BorderSizePixel = 0
+    frame.Parent = notifyGui
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = frame
+    
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 14
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Position = UDim2.new(0, 10, 0, 5)
+    titleLabel.Size = UDim2.new(1, -20, 0, 20)
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = frame
+    
+    local messageLabel = Instance.new("TextLabel")
+    messageLabel.Text = message
+    messageLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    messageLabel.TextSize = 12
+    messageLabel.Font = Enum.Font.Gotham
+    messageLabel.BackgroundTransparency = 1
+    messageLabel.Position = UDim2.new(0, 10, 0, 30)
+    messageLabel.Size = UDim2.new(1, -20, 1, -40)
+    messageLabel.TextXAlignment = Enum.TextXAlignment.Left
+    messageLabel.TextYAlignment = Enum.TextYAlignment.Top
+    messageLabel.TextWrapped = true
+    messageLabel.Parent = frame
+    
+    -- Animasyonla gelme
+    frame.Position = UDim2.new(1, 300, 1, -90)
+    TweenService:Create(frame, TweenInfo.new(0.3), {Position = UDim2.new(1, -260, 1, -90)}):Play()
+    
+    -- Süre sonunda kapanma
+    delay(duration or 3, function()
+        TweenService:Create(frame, TweenInfo.new(0.3), {Position = UDim2.new(1, 300, 1, -90)}):Play()
+        wait(0.3)
+        notifyGui:Destroy()
+    end)
+end
+
+-- Tab oluşturma fonksiyonu
+function ModernTab:Create()
+    -- Eski UI'yi temizle
+    if PlayerGui:FindFirstChild("ModernTabUI") then
+        PlayerGui.ModernTabUI:Destroy()
+    end
+    
+    -- Ana UI
+    self.Elements.Main = Instance.new("ScreenGui")
+    self.Elements.Main.Name = "ModernTabUI"
+    self.Elements.Main.ResetOnSpawn = false
+    self.Elements.Main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    self.Elements.Main.Parent = PlayerGui
+    
+    -- Ana çerçeve
+    self.Elements.MainFrame = Instance.new("Frame")
+    self.Elements.MainFrame.Name = "MainFrame"
+    self.Elements.MainFrame.BackgroundColor3 = self.Settings.MainColor
+    self.Elements.MainFrame.BackgroundTransparency = self.Settings.Transparency
+    self.Elements.MainFrame.BorderSizePixel = 0
+    self.Elements.MainFrame.Position = self.Settings.Position
+    self.Elements.MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    self.Elements.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    self.Elements.MainFrame.Visible = false
+    self.Elements.MainFrame.Parent = self.Elements.Main
+    
+    -- Köşe yuvarlaklığı
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 12)
+    corner.Parent = self.Elements.MainFrame
+    
+    -- Başlık çubuğu
+    self.Elements.TitleBar = Instance.new("Frame")
+    self.Elements.TitleBar.Name = "TitleBar"
+    self.Elements.TitleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    self.Elements.TitleBar.BackgroundTransparency = 0.3
+    self.Elements.TitleBar.BorderSizePixel = 0
+    self.Elements.TitleBar.Size = UDim2.new(1, 0, 0, 30)
+    self.Elements.TitleBar.Parent = self.Elements.MainFrame
+    
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 12)
+    titleCorner.Parent = self.Elements.TitleBar
+    
+    self.Elements.Title = Instance.new("TextLabel")
+    self.Elements.Title.Name = "Title"
+    self.Elements.Title.Text = self.Settings.Title
+    self.Elements.Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.Elements.Title.TextSize = 14
+    self.Elements.Title.Font = Enum.Font.GothamBold
+    self.Elements.Title.BackgroundTransparency = 1
+    self.Elements.Title.Position = UDim2.new(0, 10, 0, 0)
+    self.Elements.Title.Size = UDim2.new(1, -40, 1, 0)
+    self.Elements.Title.Parent = self.Elements.TitleBar
+    
+    -- Kapatma butonu
+    self.Elements.CloseButton = Instance.new("TextButton")
+    self.Elements.CloseButton.Name = "CloseButton"
+    self.Elements.CloseButton.Text = "✕"
+    self.Elements.CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.Elements.CloseButton.TextSize = 16
+    self.Elements.CloseButton.Font = Enum.Font.GothamBold
+    self.Elements.CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    self.Elements.CloseButton.BackgroundTransparency = 0.7
+    self.Elements.CloseButton.Position = UDim2.new(1, -30, 0, 0)
+    self.Elements.CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    self.Elements.CloseButton.Parent = self.Elements.TitleBar
+    
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 12)
+    closeCorner.Parent = self.Elements.CloseButton
+    
+    -- İçerik alanı
+    self.Elements.ContentFrame = Instance.new("Frame")
+    self.Elements.ContentFrame.Name = "ContentFrame"
+    self.Elements.ContentFrame.BackgroundTransparency = 1
+    self.Elements.ContentFrame.Position = UDim2.new(0, 0, 0, 35)
+    self.Elements.ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+    self.Elements.ContentFrame.Parent = self.Elements.MainFrame
+    
+    -- Sekmeler için alan
+    self.Elements.TabButtons = Instance.new("Frame")
+    self.Elements.TabButtons.Name = "TabButtons"
+    self.Elements.TabButtons.BackgroundTransparency = 1
+    self.Elements.TabButtons.Size = UDim2.new(1, 0, 0, 30)
+    self.Elements.TabButtons.Parent = self.Elements.ContentFrame
+    
+    -- Sekme içerikleri
+    self.Elements.TabContents = Instance.new("Frame")
+    self.Elements.TabContents.Name = "TabContents"
+    self.Elements.TabContents.BackgroundTransparency = 1
+    self.Elements.TabContents.Position = UDim2.new(0, 0, 0, 35)
+    self.Elements.TabContents.Size = UDim2.new(1, 0, 1, -35)
+    self.Elements.TabContents.Parent = self.Elements.ContentFrame
+    
+    -- Buton etkileşimleri
+    self.Elements.CloseButton.MouseEnter:Connect(function()
+        TweenService:Create(
+            self.Elements.CloseButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.4}
+        ):Play()
+    end)
+    
+    self.Elements.CloseButton.MouseLeave:Connect(function()
+        TweenService:Create(
+            self.Elements.CloseButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.7}
+        ):Play()
+    end)
+    
+    self.Elements.CloseButton.MouseButton1Click:Connect(function()
+        self:Close()
+    end)
+    
+    -- Y tuşu ile açma/kapama
+    local toggleConnection
+    toggleConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == self.Settings.ToggleKey then
+            if self.Elements.MainFrame.Visible then
+                self:Close()
+            else
+                self:Open()
+            end
+        end
+    end)
+    
+    self.Elements.Main.Destroying:Connect(function()
+        toggleConnection:Disconnect()
+    end)
+    
+    return self
+end
+
+-- Tab açma fonksiyonu
+function ModernTab:Open()
+    self.Elements.MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    self.Elements.MainFrame.Visible = true
+    
+    local openTween = TweenService:Create(
+        self.Elements.MainFrame,
+        TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+        {Size = self.Settings.Size}
+    )
+    openTween:Play()
+    
+    if self.Settings.Notifications then
+        self:Notify("Bilgi", "Tab menü açıldı", 2)
+    end
+end
+
+-- Tab kapama fonksiyonu
+function ModernTab:Close()
+    local closeTween = TweenService:Create(
+        self.Elements.MainFrame,
+        TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+        {Size = UDim2.new(0, 0, 0, 0)}
+    )
+    closeTween:Play()
+    
+    if self.Settings.Notifications then
+        self:Notify("Bilgi", "Tab menü kapatıldı", 2)
+    end
+    
+    closeTween.Completed:Connect(function()
+        self.Elements.Main:Destroy()
+    end)
+end
+
+-- Yeni sekme oluşturma fonksiyonu
+function ModernTab:AddTab(tabName)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName .. "TabButton"
+    tabButton.Text = tabName
+    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.TextSize = 12
+    tabButton.Font = Enum.Font.Gotham
+    tabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    tabButton.BackgroundTransparency = 0.7
+    tabButton.Size = UDim2.new(0.3, 0, 1, 0)
+    tabButton.Position = UDim2.new(#self.Elements.TabButtons:GetChildren() * 0.3, 5, 0, 0)
+    tabButton.Parent = self.Elements.TabButtons
+    
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 6)
+    tabCorner.Parent = tabButton
+    
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Name = tabName .. "Content"
+    tabContent.BackgroundTransparency = 1
+    tabContent.Size = UDim2.new(1, 0, 1, 0)
+    tabContent.Visible = false
+    tabContent.ScrollingDirection = Enum.ScrollingDirection.Y
+    tabContent.ScrollBarThickness = 4
+    tabContent.Parent = self.Elements.TabContents
+    
+    -- Buton etkileşimleri
+    tabButton.MouseEnter:Connect(function()
+        TweenService:Create(
+            tabButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.5}
+        ):Play()
+    end)
+    
+    tabButton.MouseLeave:Connect(function()
+        TweenService:Create(
+            tabButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.7}
+        ):Play()
+    end)
+    
+    tabButton.MouseButton1Click:Connect(function()
+        for _, content in ipairs(self.Elements.TabContents:GetChildren()) do
+            if content:IsA("ScrollingFrame") then
+                content.Visible = false
+            end
+        end
+        tabContent.Visible = true
+    end)
+    
+    -- İlk sekme aktif olsun
+    if #self.Elements.TabButtons:GetChildren() == 1 then
+        tabContent.Visible = true
+    end
+    
+    return tabContent
+end
+
+-- Buton oluşturma fonksiyonu
+function ModernTab:AddButton(tabContent, buttonName, callback)
+    local button = Instance.new("TextButton")
+    button.Name = buttonName
+    button.Text = buttonName
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 12
+    button.Font = Enum.Font.Gotham
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.BackgroundTransparency = 0.5
+    button.Size = UDim2.new(1, -20, 0, 30)
+    button.Position = UDim2.new(0, 10, 0, #tabContent:GetChildren() * 35 + 10)
+    button.Parent = tabContent
+    
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 6)
+    buttonCorner.Parent = button
+    
+    -- Buton etkileşimleri
+    button.MouseEnter:Connect(function()
+        TweenService:Create(
+            button,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.3, TextColor3 = Color3.fromRGB(200, 200, 255)}
+        ):Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        TweenService:Create(
+            button,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.5, TextColor3 = Color3.fromRGB(255, 255, 255)}
+        ):Play()
+    end)
+    
+    button.MouseButton1Click:Connect(function()
+        if callback then
+            callback()
+        end
+    end)
+    
+    -- ScrollingFrame boyutunu güncelle
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, #tabContent:GetChildren() * 35 + 20)
+end
+
+-- Label oluşturma fonksiyonu
+function ModernTab:AddLabel(tabContent, text)
+    local label = Instance.new("TextLabel")
+    label.Name = "Label_" .. #tabContent:GetChildren()
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 12
+    label.Font = Enum.Font.Gotham
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.new(1, -20, 0, 20)
+    label.Position = UDim2.new(0, 10, 0, #tabContent:GetChildren() * 25 + 10)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = tabContent
+    
+    -- ScrollingFrame boyutunu güncelle
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, #tabContent:GetChildren() * 25 + 20)
+end
+
+-- Kullanım örneği:
+--[[
+local tab = ModernTab:Create()
+
+local mainTab = tab:AddTab("Ana Sayfa")
+tab:AddLabel(mainTab, "Hoş geldiniz!")
+tab:AddButton(mainTab, "Merhaba De", function()
+    print("Merhaba dünya!")
+end)
+
+local settingsTab = tab:AddTab("Ayarlar")
+tab:AddButton(settingsTab, "Ayarları Kaydet", function()
+    print("Ayarlar kaydedildi")
+end)
+
+tab:Open()
+]]
+
+return ModernTab
