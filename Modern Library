@@ -9,10 +9,12 @@ ModernTab.Settings = {
     MainColor = Color3.fromRGB(25, 25, 25),
     Transparency = 0.25,
     Size = UDim2.new(0, 350, 0, 300),
+    MinSize = UDim2.new(0, 350, 0, 40), -- Küçültülmüş boyut
     Position = UDim2.new(0.5, -175, 0.5, -150),
     Title = "MODERN TAB",
     ToggleKey = Enum.KeyCode.Y,
-    Notifications = true
+    Notifications = true,
+    Minimized = false -- Başlangıçta küçültülmüş mü
 }
 
 -- UI elementleri tutacak tablo
@@ -127,10 +129,10 @@ function ModernTab:Create()
     self.Elements.Title.Font = Enum.Font.GothamBold
     self.Elements.Title.BackgroundTransparency = 1
     self.Elements.Title.Position = UDim2.new(0, 10, 0, 0)
-    self.Elements.Title.Size = UDim2.new(1, -40, 1, 0)
+    self.Elements.Title.Size = UDim2.new(1, -80, 1, 0)
     self.Elements.Title.Parent = self.Elements.TitleBar
     
-    -- Kapatma butonu
+    -- Kapatma butonu (X)
     self.Elements.CloseButton = Instance.new("TextButton")
     self.Elements.CloseButton.Name = "CloseButton"
     self.Elements.CloseButton.Text = "✕"
@@ -146,6 +148,23 @@ function ModernTab:Create()
     local closeCorner = Instance.new("UICorner")
     closeCorner.CornerRadius = UDim.new(0, 12)
     closeCorner.Parent = self.Elements.CloseButton
+    
+    -- Küçültme butonu (-)
+    self.Elements.MinimizeButton = Instance.new("TextButton")
+    self.Elements.MinimizeButton.Name = "MinimizeButton"
+    self.Elements.MinimizeButton.Text = "-"
+    self.Elements.MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.Elements.MinimizeButton.TextSize = 16
+    self.Elements.MinimizeButton.Font = Enum.Font.GothamBold
+    self.Elements.MinimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    self.Elements.MinimizeButton.BackgroundTransparency = 0.7
+    self.Elements.MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
+    self.Elements.MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+    self.Elements.MinimizeButton.Parent = self.Elements.TitleBar
+    
+    local minimizeCorner = Instance.new("UICorner")
+    minimizeCorner.CornerRadius = UDim.new(0, 12)
+    minimizeCorner.Parent = self.Elements.MinimizeButton
     
     -- İçerik alanı
     self.Elements.ContentFrame = Instance.new("Frame")
@@ -191,6 +210,27 @@ function ModernTab:Create()
         self:Close()
     end)
     
+    -- Küçültme butonu etkileşimleri
+    self.Elements.MinimizeButton.MouseEnter:Connect(function()
+        TweenService:Create(
+            self.Elements.MinimizeButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.4}
+        ):Play()
+    end)
+    
+    self.Elements.MinimizeButton.MouseLeave:Connect(function()
+        TweenService:Create(
+            self.Elements.MinimizeButton,
+            TweenInfo.new(0.2),
+            {BackgroundTransparency = 0.7}
+        ):Play()
+    end)
+    
+    self.Elements.MinimizeButton.MouseButton1Click:Connect(function()
+        self:ToggleMinimize()
+    end)
+    
     -- Y tuşu ile açma/kapama
     local toggleConnection
     toggleConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
@@ -215,10 +255,11 @@ function ModernTab:Open()
     self.Elements.MainFrame.Size = UDim2.new(0, 0, 0, 0)
     self.Elements.MainFrame.Visible = true
     
+    local targetSize = self.Settings.Minimized and self.Settings.MinSize or self.Settings.Size
     local openTween = TweenService:Create(
         self.Elements.MainFrame,
         TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-        {Size = self.Settings.Size}
+        {Size = targetSize}
     )
     openTween:Play()
     
@@ -243,6 +284,27 @@ function ModernTab:Close()
     closeTween.Completed:Connect(function()
         self.Elements.Main:Destroy()
     end)
+end
+
+-- Küçültme fonksiyonu
+function ModernTab:ToggleMinimize()
+    self.Settings.Minimized = not self.Settings.Minimized
+    
+    local targetSize = self.Settings.Minimized and self.Settings.MinSize or self.Settings.Size
+    local minimizeTween = TweenService:Create(
+        self.Elements.MainFrame,
+        TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {Size = targetSize}
+    )
+    minimizeTween:Play()
+    
+    -- İçeriği gizle/göster
+    self.Elements.ContentFrame.Visible = not self.Settings.Minimized
+    
+    if self.Settings.Notifications then
+        local message = self.Settings.Minimized and "Tab menü küçültüldü" or "Tab menü büyütüldü"
+        self:Notify("Bilgi", message, 1)
+    end
 end
 
 -- Yeni sekme oluşturma fonksiyonu
@@ -368,23 +430,5 @@ function ModernTab:AddLabel(tabContent, text)
     -- ScrollingFrame boyutunu güncelle
     tabContent.CanvasSize = UDim2.new(0, 0, 0, #tabContent:GetChildren() * 25 + 20)
 end
-
--- Kullanım örneği:
---[[
-local tab = ModernTab:Create()
-
-local mainTab = tab:AddTab("Ana Sayfa")
-tab:AddLabel(mainTab, "Hoş geldiniz!")
-tab:AddButton(mainTab, "Merhaba De", function()
-    print("Merhaba dünya!")
-end)
-
-local settingsTab = tab:AddTab("Ayarlar")
-tab:AddButton(settingsTab, "Ayarları Kaydet", function()
-    print("Ayarlar kaydedildi")
-end)
-
-tab:Open()
-]]
 
 return ModernTab
