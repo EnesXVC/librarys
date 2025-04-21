@@ -1,4 +1,5 @@
-https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/docs/banner.png
+https://cdn.discordapp.com/attachments/1345310389402992694/1363893953338016034/image.png?ex=6807b0ba&is=68065f3a&hm=3b162cc29d438428902156d6a2653f6ae115f6f588e5198fe9ece83d566ebe00&
+
 # WindUI Library
 
 ## Booting the Library
