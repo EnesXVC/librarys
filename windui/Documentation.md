@@ -35,7 +35,7 @@ local Window = WindUI:CreateWindow({
 ```lua
 local Tab = Window:Tab({ 
     Title = "Tab Title", 
-    Icon = "icon-name", --source
+    Icon = "icon-name", --lucide icons
     Desc = "Description",
     Locked = true/false 
 })
