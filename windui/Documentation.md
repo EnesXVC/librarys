@@ -6,8 +6,6 @@
 
 <hr />
 
-# WindUI Library
-
 ## Booting the Library
 ```lua
 local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
