@@ -37,7 +37,7 @@ local Tab = Window:Tab({
     Title = "Tab Title", 
     Icon = "icon-name", --lucide icons
     Desc = "Description",
-    Locked = true/false 
+    Locked = false --true/false
 })
 ```
 ## Creating a Button
@@ -46,9 +46,9 @@ Tab:Button({
     Title = "Button Text",
     Desc = "Description",
     Callback = function()
-      		print("button pressed")
+    print("button pressed")
 end,
-    Locked = true/false
+    Locked = false --true/false
 })
 ```
 ## Creating a toggle
@@ -57,7 +57,7 @@ Tab:Toggle({
     Title = "Toggle Label",
     Default = false, --true/false
     Callback = function(Value)
-		print(Value
+       print(Value)
  end
 })
 ```
@@ -71,7 +71,7 @@ Tab:Slider({
         Default = 50
     },
     Callback = function(Value)
-    		print(Value)
+        print(Value)
     end
 })
 ```
@@ -82,7 +82,7 @@ Tab:Input({
     Default = "default value",
     Placeholder = "placeholder text",
     Callback = function(Value)
-		print(Value)
+	 print(Value)
  end
 })
 ```
@@ -93,7 +93,7 @@ Tab:Dropdown({
     Values = {"Option1", "Option2"},
     Value = "default option",
     Callback = function(option)
-		print(option)
+        print(option)
  end
 })
 ```
@@ -103,7 +103,7 @@ Tab:Colorpicker({
     Title = "Color Picker",
     Default = Color3.fromRGB(255,0,0),
     Callback = function(color)
-		print(color)
+       print(color)
  end
 })
 ```
