@@ -1,11 +1,11 @@
-<h1 align="center">WindUI</h1align> 
+[<h1 align="center">WindUI</h1align> 
 
 <hr />
 
 <img src="docs/banner.png" width="100%">
 
 <hr />
-
+](https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/docs/banner.png)
 # WindUI Library
 
 ## Booting the Library
