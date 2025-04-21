@@ -1,9 +1,8 @@
-https://cdn.discordapp.com/attachments/1345310389402992694/1363893953338016034/image.png?ex=6807b0ba&is=68065f3a&hm=3b162cc29d438428902156d6a2653f6ae115f6f588e5198fe9ece83d566ebe00&
 <h1 align="center">WindUI</h1align> 
 
 <hr />
 
-<img src="docs/banner.png" width="100%">
+<img src="https://cdn.discordapp.com/attachments/1345310389402992694/1363893953338016034/image.png?ex=6807b0ba&is=68065f3a&hm=3b162cc29d438428902156d6a2653f6ae115f6f588e5198fe9ece83d566ebe00&" width="100%">
 
 <hr />
 
