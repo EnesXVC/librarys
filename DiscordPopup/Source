@@ -1,126 +1,142 @@
 local DiscordPopup = {}
+DiscordPopup.__index = DiscordPopup
 
 -- Default configuration
-DiscordPopup.DefaultConfig = {
-    DiscordLink = "https://discord.gg/",
-    ShowAnimation = true,
-    Position = UDim2.new(0.8, -100, 0.5, -97),
-    Size = UDim2.new(0, 200, 0, 195),
-    CloseText = "fuck off",
-    JoinText = "join the discord :3",
-    CopyText = "copy link",
-    BackgroundColor = Color3.fromRGB(68, 71, 75),
-    ButtonColor = Color3.fromRGB(116, 139, 220),
-    CloseButtonColor = Color3.fromRGB(32, 35, 38)
+local defaultConfig = {
+    discordLink = "https://discord.gg/example",
+    position = UDim2.new(1, -220, 0.5, -97),
+    size = UDim2.new(0, 200, 0, 195),
+    enableAnimations = true,
+    popDuration = 0.5,
+    fadeDuration = 1,
+    colors = {
+        background = Color3.fromRGB(68, 71, 75),
+        button = Color3.fromRGB(32, 35, 38),
+        accent = Color3.fromRGB(116, 139, 220),
+        text = Color3.fromRGB(255, 255, 255)
+    },
+    images = {
+        discordLogo = "rbxassetid://18817097052",
+        joinImage = "rbxassetid://18817519330"
+    }
 }
 
-function DiscordPopup:Create(config)
-    -- Merge user config with defaults
-    local settings = setmetatable(config or {}, {__index = DiscordPopup.DefaultConfig})
-    
-    -- Protection function
-    local function protectUI(sGui)
-        local function blankfunction(...) return ... end
-        local cloneref = cloneref or blankfunction
+-- Protection function
+local function protectUI(sGui)
+    local function blankfunction(...)
+        return ...
+    end
 
-        local function SafeGetService(service)
-            return cloneref(game:GetService(service)) or game:GetService(service)
-        end
+    local cloneref = cloneref or blankfunction
 
-        local cGUI = SafeGetService("CoreGui")
-        local rPlr = SafeGetService("Players"):FindFirstChildWhichIsA("Player")
-        local cGUIProtect = {}
-        local rService = SafeGetService("RunService")
-        local lPlr = SafeGetService("Players").LocalPlayer
+    local function SafeGetService(service)
+        return cloneref(game:GetService(service)) or game:GetService(service)
+    end
 
-        local function NAProtection(inst, var)
-            if inst then
-                if var then
-                    inst[var] = "\0"
-                    inst.Archivable = false
-                else
-                    inst.Name = "\0"
-                    inst.Archivable = false
-                end
+    local cGUI = SafeGetService("CoreGui")
+    local rPlr = SafeGetService("Players"):FindFirstChildWhichIsA("Player")
+    local cGUIProtect = {}
+    local rService = SafeGetService("RunService")
+    local lPlr = SafeGetService("Players").LocalPlayer
+
+    local function NAProtection(inst, var)
+        if inst then
+            if var then
+                inst[var] = "\0"
+                inst.Archivable = false
+            else
+                inst.Name = "\0"
+                inst.Archivable = false
             end
-        end
-
-        if (get_hidden_gui or gethui) then
-            local hiddenUI = (get_hidden_gui or gethui)
-            NAProtection(sGui)
-            sGui.Parent = hiddenUI()
-            return sGui
-        elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
-            NAProtection(sGui)
-            syn.protect_gui(sGui)
-            sGui.Parent = cGUI
-            return sGui
-        elseif cGUI:FindFirstChildWhichIsA("ScreenGui") then
-            pcall(function()
-                for _, v in pairs(sGui:GetDescendants()) do
-                    cGUIProtect[v] = rPlr.Name
-                end
-                sGui.DescendantAdded:Connect(function(v)
-                    cGUIProtect[v] = rPlr.Name
-                end)
-                cGUIProtect[sGui] = rPlr.Name
-
-                local meta = getrawmetatable(game)
-                local tostr = meta.__tostring
-                setreadonly(meta, false)
-                meta.__tostring = newcclosure(function(t)
-                    if cGUIProtect[t] and not checkcaller() then
-                        return cGUIProtect[t]
-                    end
-                    return tostr(t)
-                end)
-            end)
-            if not rService:IsStudio() then
-                local newGui = cGUI:FindFirstChildWhichIsA("ScreenGui")
-                newGui.DescendantAdded:Connect(function(v)
-                    cGUIProtect[v] = rPlr.Name
-                end)
-                for _, v in pairs(sGui:GetChildren()) do
-                    v.Parent = newGui
-                end
-                sGui = newGui
-            end
-            return sGui
-        elseif cGUI then
-            NAProtection(sGui)
-            sGui.Parent = cGUI
-            return sGui
-        elseif lPlr and lPlr:FindFirstChild("PlayerGui") then
-            NAProtection(sGui)
-            sGui.Parent = lPlr:FindFirstChild("PlayerGui")
-            return sGui
-        else
-            return nil
         end
     end
 
-    -- Create the GUI
+    if (get_hidden_gui or gethui) then
+        local hiddenUI = (get_hidden_gui or gethui)
+        NAProtection(sGui)
+        sGui.Parent = hiddenUI()
+        return sGui
+    elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+        NAProtection(sGui)
+        syn.protect_gui(sGui)
+        sGui.Parent = cGUI
+        return sGui
+    elseif cGUI:FindFirstChildWhichIsA("ScreenGui") then
+        pcall(function()
+            for _, v in pairs(sGui:GetDescendants()) do
+                cGUIProtect[v] = rPlr.Name
+            end
+            sGui.DescendantAdded:Connect(function(v)
+                cGUIProtect[v] = rPlr.Name
+            end)
+            cGUIProtect[sGui] = rPlr.Name
+
+            local meta = getrawmetatable(game)
+            local tostr = meta.__tostring
+            setreadonly(meta, false)
+            meta.__tostring = newcclosure(function(t)
+                if cGUIProtect[t] and not checkcaller() then
+                    return cGUIProtect[t]
+                end
+                return tostr(t)
+            end)
+        end)
+        if not rService:IsStudio() then
+            local newGui = cGUI:FindFirstChildWhichIsA("ScreenGui")
+            newGui.DescendantAdded:Connect(function(v)
+                cGUIProtect[v] = rPlr.Name
+            end)
+            for _, v in pairs(sGui:GetChildren()) do
+                v.Parent = newGui
+            end
+            sGui = newGui
+        end
+        return sGui
+    elseif cGUI then
+        NAProtection(sGui)
+        sGui.Parent = cGUI
+        return sGui
+    elseif lPlr and lPlr:FindFirstChild("PlayerGui") then
+        NAProtection(sGui)
+        sGui.Parent = lPlr:FindFirstChild("PlayerGui")
+        return sGui
+    else
+        return nil
+    end
+end
+
+function DiscordPopup.new(config)
+    local self = setmetatable({}, DiscordPopup)
+    self.config = setmetatable(config or {}, {__index = defaultConfig})
+    self.gui = nil
+    return self
+end
+
+function DiscordPopup:Create()
+    -- Create GUI
     local G2L = {}
     G2L["1"] = Instance.new("ScreenGui")
     G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
+    
+    -- Main frame
     G2L["2"] = Instance.new("Frame", G2L["1"])
     G2L["2"]["BorderSizePixel"] = 0
-    G2L["2"]["BackgroundColor3"] = settings.BackgroundColor
-    G2L["2"]["Size"] = settings.Size
-    G2L["2"]["Position"] = settings.Position
+    G2L["2"]["BackgroundColor3"] = self.config.colors.background
+    G2L["2"]["Size"] = self.config.enableAnimations and UDim2.new(0, 0, 0, 0) or self.config.size
+    G2L["2"]["Position"] = self.config.position
     G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     
     -- Close button
     G2L["3"] = Instance.new("TextButton", G2L["2"])
     G2L["3"]["BorderSizePixel"] = 0
     G2L["3"]["TextSize"] = 23
-    G2L["3"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["3"]["BackgroundColor3"] = settings.CloseButtonColor
+    G2L["3"]["TextColor3"] = self.config.colors.text
+    G2L["3"]["BackgroundColor3"] = self.config.colors.button
     G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
     G2L["3"]["Size"] = UDim2.new(0, 130, 0, 26)
     G2L["3"]["Name"] = [[close]]
     G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["3"]["Text"] = settings.CloseText
+    G2L["3"]["Text"] = [[Close]]
     G2L["3"]["Position"] = UDim2.new(0.5, -65, 0.8, 0)
     
     -- Copy button
@@ -128,50 +144,51 @@ function DiscordPopup:Create(config)
     G2L["4"]["TextWrapped"] = true
     G2L["4"]["BorderSizePixel"] = 0
     G2L["4"]["TextSize"] = 27
-    G2L["4"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["4"]["BackgroundColor3"] = settings.ButtonColor
+    G2L["4"]["TextColor3"] = self.config.colors.text
+    G2L["4"]["BackgroundColor3"] = self.config.colors.accent
     G2L["4"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
     G2L["4"]["Size"] = UDim2.new(0, 152, 0, 30)
     G2L["4"]["Name"] = [[copy]]
     G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["4"]["Text"] = settings.CopyText
+    G2L["4"]["Text"] = [[Copy Link]]
     G2L["4"]["Position"] = UDim2.new(0.5, -76, 0.6, 0)
     G2L["5"] = Instance.new("UICorner", G2L["4"])
     G2L["5"]["CornerRadius"] = UDim.new(0, 2)
     
-    -- Join text
+    -- Title label
     G2L["6"] = Instance.new("TextLabel", G2L["2"])
     G2L["6"]["TextWrapped"] = true
     G2L["6"]["BorderSizePixel"] = 0
     G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
     G2L["6"]["TextSize"] = 30
     G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-    G2L["6"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
+    G2L["6"]["TextColor3"] = self.config.colors.text
     G2L["6"]["BackgroundTransparency"] = 1
     G2L["6"]["Size"] = UDim2.new(0, 200, 0, 61)
     G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["6"]["Text"] = settings.JoinText
+    G2L["6"]["Text"] = [[Join our Discord!]]
     G2L["6"]["Name"] = [[join]]
     G2L["6"]["Position"] = UDim2.new(0.5, -100, 0, 0)
     
-    -- UI Corners
+    -- Round corners
     G2L["7"] = Instance.new("UICorner", G2L["2"])
     G2L["7"]["CornerRadius"] = UDim.new(0, 4)
     
-    -- Images
+    -- Discord logo
     G2L["8"] = Instance.new("ImageLabel", G2L["2"])
     G2L["8"]["BorderSizePixel"] = 0
     G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["8"]["Image"] = [[rbxassetid://18817097052]]
+    G2L["8"]["Image"] = self.config.images.discordLogo
     G2L["8"]["Size"] = UDim2.new(0, 73, 0, 75)
     G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     G2L["8"]["BackgroundTransparency"] = 1
     G2L["8"]["Position"] = UDim2.new(0.695, -36, 0.21025, 0)
     
+    -- Join image
     G2L["9"] = Instance.new("ImageLabel", G2L["2"])
     G2L["9"]["BorderSizePixel"] = 0
     G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["9"]["Image"] = [[rbxassetid://18817519330]]
+    G2L["9"]["Image"] = self.config.images.joinImage
     G2L["9"]["Size"] = UDim2.new(0, 100, 0, 66)
     G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     G2L["9"]["BackgroundTransparency"] = 1
@@ -180,108 +197,125 @@ function DiscordPopup:Create(config)
     -- Close script
     local closeScript = Instance.new("LocalScript", G2L["2"])
     closeScript.Name = "close"
-    local TweenService = game:GetService("TweenService")
-    local player = game.Players.LocalPlayer
-    local screenGui = closeScript.Parent.Parent
-    local frame = screenGui:WaitForChild("Frame")
-    local closeButton = frame:WaitForChild("close")
-    local fadeOutTime = 1
     
-    local function fadeOutFrameAndContents(frame)
-        for _, descendant in ipairs(frame:GetDescendants()) do
-            if descendant:IsA("GuiObject") then
-                local tweenInfo = {}
-                if descendant:IsA("TextLabel") or descendant:IsA("TextButton") then
-                    tweenInfo.TextTransparency = 1
-                end
-                if descendant:IsA("ImageLabel") or descendant:IsA("ImageButton") then
-                    tweenInfo.ImageTransparency = 1
-                end
-                tweenInfo.BackgroundTransparency = 1
-                local fadeTween = TweenService:Create(descendant, TweenInfo.new(fadeOutTime), tweenInfo)
-                fadeTween:Play()
-            end
-        end
-        local frameTween = TweenService:Create(frame, TweenInfo.new(fadeOutTime), {BackgroundTransparency = 1})
-        frameTween:Play()
-        frameTween.Completed:Connect(function()
-            frame.Visible = false
-        end)
-    end
-    
-    closeButton.MouseButton1Click:Connect(function()
-        fadeOutFrameAndContents(frame)
-    end)
-
-    -- Copy script with bubble notification
+    -- Copy script
     local copyScript = Instance.new("LocalScript", G2L["2"])
     copyScript.Name = "copy"
-    local copyButton = frame:WaitForChild("copy")
     
-    local function createBubbleNotification(text)
-        local bubble = Instance.new("Frame")
-        bubble.Name = "CopyNotification"
-        bubble.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        bubble.BackgroundTransparency = 0.3
-        bubble.Size = UDim2.new(0, 150, 0, 40)
-        bubble.Position = UDim2.new(0.5, -75, 0.5, -20)
-        bubble.ZIndex = 10
+    -- Animation script
+    local animScript = Instance.new("LocalScript", G2L["2"])
+    
+    -- Close functionality
+    local function setupCloseScript()
+        local TweenService = game:GetService("TweenService")
+        local frame = G2L["2"]
+        local closeButton = frame:WaitForChild("close")
         
-        local corner = Instance.new("UICorner", bubble)
-        corner.CornerRadius = UDim.new(0, 8)
+        local function fadeOutFrameAndContents(frame)
+            for _, descendant in ipairs(frame:GetDescendants()) do
+                if descendant:IsA("GuiObject") then
+                    local tweenInfo = {}
+                    if descendant:IsA("TextLabel") or descendant:IsA("TextButton") then
+                        tweenInfo.TextTransparency = 1
+                    end
+                    if descendant:IsA("ImageLabel") or descendant:IsA("ImageButton") then
+                        tweenInfo.ImageTransparency = 1
+                    end
+                    tweenInfo.BackgroundTransparency = 1
+                    local fadeTween = TweenService:Create(descendant, TweenInfo.new(self.config.fadeDuration), tweenInfo)
+                    fadeTween:Play()
+                end
+            end
+            
+            local frameTween = TweenService:Create(frame, TweenInfo.new(self.config.fadeDuration), {BackgroundTransparency = 1})
+            frameTween:Play()
+            frameTween.Completed:Connect(function()
+                frame.Visible = false
+            end)
+        end
         
-        local label = Instance.new("TextLabel", bubble)
-        label.Text = text
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, 0, 1, 0)
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 14
-        
-        bubble.Parent = frame
-        
-        -- Animation
-        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local fadeIn = TweenService:Create(bubble, tweenInfo, {BackgroundTransparency = 0})
-        local fadeOut = TweenService:Create(bubble, tweenInfo, {BackgroundTransparency = 1})
-        
-        fadeIn:Play()
-        fadeIn.Completed:Wait()
-        wait(1.5)
-        fadeOut:Play()
-        fadeOut.Completed:Connect(function()
-            bubble:Destroy()
+        closeButton.MouseButton1Click:Connect(function()
+            fadeOutFrameAndContents(frame)
         end)
     end
     
-    local function onCopyButtonClicked()
-        setclipboard(settings.DiscordLink)
-        if settings.ShowAnimation then
-            createBubbleNotification("Copied to clipboard!")
+    -- Copy functionality
+    local function setupCopyScript()
+        local frame = G2L["2"]
+        local copyButton = frame:WaitForChild("copy")
+        
+        local function onCopyButtonClicked()
+            setclipboard(self.config.discordLink)
+            
+            -- Show copied notification
+            local notification = Instance.new("TextLabel")
+            notification.Text = "Copied to clipboard!"
+            notification.Size = UDim2.new(0, 150, 0, 30)
+            notification.Position = UDim2.new(0.5, -75, 1, 10)
+            notification.BackgroundColor3 = Color3.fromRGB(76, 175, 80)
+            notification.TextColor3 = Color3.fromRGB(255, 255, 255)
+            notification.Font = Enum.Font.SourceSansBold
+            notification.TextSize = 18
+            notification.AnchorPoint = Vector2.new(0.5, 0)
+            notification.Parent = frame
+            
+            local corner = Instance.new("UICorner", notification)
+            corner.CornerRadius = UDim.new(0, 4)
+            
+            -- Fade out animation
+            local tween = game:GetService("TweenService"):Create(
+                notification,
+                TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {TextTransparency = 1, BackgroundTransparency = 1}
+            )
+            
+            delay(2, function()
+                tween:Play()
+                tween.Completed:Connect(function()
+                    notification:Destroy()
+                end)
+            end)
         end
+        
+        copyButton.MouseButton1Click:Connect(onCopyButtonClicked)
     end
     
-    copyButton.MouseButton1Click:Connect(onCopyButtonClicked)
-
-    -- Popup animation script
-    local popupScript = Instance.new("LocalScript", G2L["2"])
-    local popOutTime = 0.5
-    frame.Size = UDim2.new(0, 0, 0, 0)
-    frame.Visible = true
-    
-    if settings.ShowAnimation then
-        local tweenInfo = TweenInfo.new(popOutTime, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
-        local targetSize = settings.Size
-        local popOutTween = TweenService:Create(frame, tweenInfo, {Size = targetSize})
+    -- Animation functionality
+    local function setupAnimationScript()
+        if not self.config.enableAnimations then
+            G2L["2"].Visible = true
+            return
+        end
+        
+        local TweenService = game:GetService("TweenService")
+        local frame = G2L["2"]
+        frame.Visible = true
+        
+        local popOutTween = TweenService:Create(
+            frame,
+            TweenInfo.new(self.config.popDuration, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out),
+            {Size = self.config.size}
+        )
         popOutTween:Play()
-    else
-        frame.Size = settings.Size
     end
-
+    
+    -- Set up scripts
+    setupCloseScript()
+    setupCopyScript()
+    setupAnimationScript()
+    
     -- Protect the GUI
     protectUI(G2L["1"])
     
-    return G2L["1"]
+    self.gui = G2L["1"]
+    return self
+end
+
+function DiscordPopup:Destroy()
+    if self.gui then
+        self.gui:Destroy()
+        self.gui = nil
+    end
 end
 
 return DiscordPopup
