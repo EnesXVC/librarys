@@ -5,7 +5,7 @@ function DiscordPopup:CreatePopup()
     local defaultSettings = {
         copyButtonText = "copy link",
         closeButtonText = "fuck off",
-        discordLink = "https://discord.gg/MP9nZgEeQD",
+        discordLink = "https://discord.gg/rTw5M8dRXN",
         labelText = "join the discord :3",
         image1Id = "rbxassetid://18817097052",
         image2Id = "rbxassetid://18817519330"
