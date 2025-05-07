@@ -4,12 +4,11 @@ local DiscordPopup = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 ```
 ## Configure the settings
 ```lua
-DiscordPopup:Configure({
+DiscordPopup:SetSettings({
     copyButtonText = "copy link",
     closeButtonText = "fuck off",
-    discordLink = "https://discord.gg/YOUR_LINK",
+    discordLink = "https://discord.gg/link",
     labelText = "join the discord :3",
-    image1Id = "rbxassetid://18817097052",
-    image2Id = "rbxassetid://18817519330"
+    position = "left" -- "left", "center", "right"
 })
 ```
