@@ -1,77 +1,94 @@
 local DiscordPopup = {}
 
-function DiscordPopup:CreatePopup()
-    -- Default values
-    local defaultSettings = {
-        copyButtonText = "copy link",
-        closeButtonText = "fuck off",
-        discordLink = "https://discord.gg/rTw5M8dRXN",
-        labelText = "join the discord :3",
-        image1Id = "rbxassetid://18817097052",
-        image2Id = "rbxassetid://18817519330"
-    }
-    
-    -- Create the GUI
+-- Default ayarlar
+local settings = {
+    copyButtonText = "copy link",
+    closeButtonText = "fuck off",
+    discordLink = "https://discord.gg/MP9nZgEeQD",
+    labelText = "join the discord :3",
+    image1Id = "rbxassetid://18817097052",
+    image2Id = "rbxassetid://18817519330",
+    position = "center" -- "left", "center", "right"
+}
+
+-- GUI oluşturma fonksiyonu
+function DiscordPopup:Create()
     local G2L = {}
+    
+    -- Ana GUI
     G2L["1"] = Instance.new("ScreenGui")
     G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
     
+    -- Ana frame
     G2L["2"] = Instance.new("Frame", G2L["1"])
     G2L["2"]["BorderSizePixel"] = 0
     G2L["2"]["BackgroundColor3"] = Color3.fromRGB(68, 71, 75)
     G2L["2"]["Size"] = UDim2.new(0, 200, 0, 195)
-    G2L["2"]["Position"] = UDim2.new(0.5, -100, 0.5, -97)
+    
+    -- Position ayarları
+    if settings.position == "center" then
+        G2L["2"]["Position"] = UDim2.new(0.5, -100, 0.5, -97)
+    elseif settings.position == "left" then
+        G2L["2"]["Position"] = UDim2.new(0, 10, 0.5, -97)
+    elseif settings.position == "right" then
+        G2L["2"]["Position"] = UDim2.new(1, -210, 0.5, -97)
+    end
+    
     G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     
+    -- Close butonu
     G2L["3"] = Instance.new("TextButton", G2L["2"])
     G2L["3"]["BorderSizePixel"] = 0
     G2L["3"]["TextSize"] = 23
     G2L["3"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
     G2L["3"]["BackgroundColor3"] = Color3.fromRGB(32, 35, 38)
-    G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+    G2L["3"]["FontFace"] = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
     G2L["3"]["Size"] = UDim2.new(0, 130, 0, 26)
-    G2L["3"]["Name"] = [[close]]
+    G2L["3"]["Name"] = "close"
     G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["3"]["Text"] = defaultSettings.closeButtonText
+    G2L["3"]["Text"] = settings.closeButtonText
     G2L["3"]["Position"] = UDim2.new(0.5, -65, 0.8, 0)
     
+    -- Copy butonu
     G2L["4"] = Instance.new("TextButton", G2L["2"])
     G2L["4"]["TextWrapped"] = true
     G2L["4"]["BorderSizePixel"] = 0
     G2L["4"]["TextSize"] = 27
     G2L["4"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
     G2L["4"]["BackgroundColor3"] = Color3.fromRGB(116, 139, 220)
-    G2L["4"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+    G2L["4"]["FontFace"] = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
     G2L["4"]["Size"] = UDim2.new(0, 152, 0, 30)
-    G2L["4"]["Name"] = [[copy]]
+    G2L["4"]["Name"] = "copy"
     G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["4"]["Text"] = defaultSettings.copyButtonText
+    G2L["4"]["Text"] = settings.copyButtonText
     G2L["4"]["Position"] = UDim2.new(0.5, -76, 0.6, 0)
     
     G2L["5"] = Instance.new("UICorner", G2L["4"])
     G2L["5"]["CornerRadius"] = UDim.new(0, 2)
     
+    -- Başlık
     G2L["6"] = Instance.new("TextLabel", G2L["2"])
     G2L["6"]["TextWrapped"] = true
     G2L["6"]["BorderSizePixel"] = 0
     G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
     G2L["6"]["TextSize"] = 30
-    G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+    G2L["6"]["FontFace"] = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
     G2L["6"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
     G2L["6"]["BackgroundTransparency"] = 1
     G2L["6"]["Size"] = UDim2.new(0, 200, 0, 61)
     G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-    G2L["6"]["Text"] = defaultSettings.labelText
-    G2L["6"]["Name"] = [[join]]
+    G2L["6"]["Text"] = settings.labelText
+    G2L["6"]["Name"] = "join"
     G2L["6"]["Position"] = UDim2.new(0.5, -100, 0, 0)
     
     G2L["7"] = Instance.new("UICorner", G2L["2"])
     G2L["7"]["CornerRadius"] = UDim.new(0, 4)
     
+    -- Resimler
     G2L["8"] = Instance.new("ImageLabel", G2L["2"])
     G2L["8"]["BorderSizePixel"] = 0
     G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["8"]["Image"] = defaultSettings.image1Id
+    G2L["8"]["Image"] = settings.image1Id
     G2L["8"]["Size"] = UDim2.new(0, 73, 0, 75)
     G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     G2L["8"]["BackgroundTransparency"] = 1
@@ -80,24 +97,17 @@ function DiscordPopup:CreatePopup()
     G2L["9"] = Instance.new("ImageLabel", G2L["2"])
     G2L["9"]["BorderSizePixel"] = 0
     G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-    G2L["9"]["Image"] = defaultSettings.image2Id
+    G2L["9"]["Image"] = settings.image2Id
     G2L["9"]["Size"] = UDim2.new(0, 100, 0, 66)
     G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     G2L["9"]["BackgroundTransparency"] = 1
     G2L["9"]["Position"] = UDim2.new(0.29, -50, 0.25641, 0)
     
-    -- Scripts
-    G2L["a"] = Instance.new("LocalScript", G2L["2"])
-    G2L["a"]["Name"] = [[close]]
-    
-    G2L["b"] = Instance.new("LocalScript", G2L["2"])
-    G2L["b"]["Name"] = [[copy]]
-    
-    G2L["c"] = Instance.new("LocalScript", G2L["2"])
-    
-    -- Close script
-    local function C_a()
-        local script = G2L["a"]
+    -- Scriptler
+    local function createCloseScript()
+        local script = Instance.new("LocalScript", G2L["2"])
+        script.Name = "close"
+        
         local TweenService = game:GetService("TweenService")
         local frame = script.Parent
         local closeButton = frame:WaitForChild("close")
@@ -129,25 +139,24 @@ function DiscordPopup:CreatePopup()
             fadeOutFrameAndContents(frame)
         end)
     end
-    task.spawn(C_a)
     
-    -- Copy script
-    local function C_b()
-        local script = G2L["b"]
+    local function createCopyScript()
+        local script = Instance.new("LocalScript", G2L["2"])
+        script.Name = "copy"
+        
         local frame = script.Parent
         local copyButton = frame:WaitForChild("copy")
         
         local function onCopyButtonClicked()
-            setclipboard(defaultSettings.discordLink)
+            setclipboard(settings.discordLink)
         end
         
         copyButton.MouseButton1Click:Connect(onCopyButtonClicked)
     end
-    task.spawn(C_b)
     
-    -- Popup animation
-    local function C_c()
-        local script = G2L["c"]
+    local function createPopupScript()
+        local script = Instance.new("LocalScript", G2L["2"])
+        
         local TweenService = game:GetService("TweenService")
         local frame = script.Parent
         
@@ -160,9 +169,12 @@ function DiscordPopup:CreatePopup()
         local popOutTween = TweenService:Create(frame, tweenInfo, {Size = targetSize})
         popOutTween:Play()
     end
-    task.spawn(C_c)
     
-    -- Protection function
+    createCloseScript()
+    createCopyScript()
+    createPopupScript()
+    
+    -- GUI koruma fonksiyonu
     local function protectUI(sGui)
         local function blankfunction(...)
             return ...
@@ -246,28 +258,16 @@ function DiscordPopup:CreatePopup()
         end
     end
     
-    -- Protect the GUI
+    -- GUI'yi koru
     protectUI(G2L["1"])
     
     return G2L["1"]
 end
 
--- Configuration function
-function DiscordPopup:Configure(settings)
-    self.settings = settings or {}
-    
-    -- Merge with default settings
-    for k, v in pairs({
-        copyButtonText = "copy link",
-        closeButtonText = "fuck off",
-        discordLink = "https://discord.gg/MP9nZgEeQD",
-        labelText = "join the discord :3",
-        image1Id = "rbxassetid://18817097052",
-        image2Id = "rbxassetid://18817519330"
-    }) do
-        if self.settings[k] == nil then
-            self.settings[k] = v
-        end
+-- Ayarları değiştirme fonksiyonu
+function DiscordPopup:SetSettings(newSettings)
+    for k, v in pairs(newSettings) do
+        settings[k] = v
     end
 end
 
