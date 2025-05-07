@@ -15,3 +15,6 @@ DiscordPopup:SetPosition("center") -- "left", "center", "right"
 ```lua
 local popup = DiscordPopup:Create()
 ```
+### Credits:
+- [EnesXVC](https://github.com/EnesXVC) (Library)
+- [hellohellohell012321](https://github.com/hellohellohell012321) (Gui)
