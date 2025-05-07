@@ -1,6 +1,5 @@
 local DiscordPopup = {}
 
--- Local ayarlar (direkt buradan değiştirilebilir)
 local copyButtonText = "copy link"
 local closeButtonText = "fuck off"
 local discordLink = "https://discord.gg/MP9nZgEeQD"
@@ -9,32 +8,27 @@ local image1Id = "rbxassetid://18817097052"
 local image2Id = "rbxassetid://18817519330"
 local position = "center" -- "left", "center", "right"
 
--- GUI oluşturma fonksiyonu
 function DiscordPopup:Create()
     local G2L = {}
     
-    -- Ana GUI
     G2L["1"] = Instance.new("ScreenGui")
     G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
     
-    -- Ana frame
     G2L["2"] = Instance.new("Frame", G2L["1"])
     G2L["2"]["BorderSizePixel"] = 0
     G2L["2"]["BackgroundColor3"] = Color3.fromRGB(68, 71, 75)
     G2L["2"]["Size"] = UDim2.new(0, 200, 0, 195)
     
-    -- Position ayarı
     if position == "center" then
         G2L["2"]["Position"] = UDim2.new(0.5, -100, 0.5, -97)
     elseif position == "left" then
-        G2L["2"]["Position"] = UDim2.new(0, 5, 0.5, -97) -- Sola yapışık, 5 pixel boşluk
+        G2L["2"]["Position"] = UDim2.new(0, 5, 0.5, -97)
     elseif position == "right" then
-        G2L["2"]["Position"] = UDim2.new(1, -205, 0.5, -97) -- Sağa yapışık, 5 pixel boşluk
+        G2L["2"]["Position"] = UDim2.new(1, -205, 0.5, -97)
     end
     
     G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
     
-    -- Close butonu
     G2L["3"] = Instance.new("TextButton", G2L["2"])
     G2L["3"]["BorderSizePixel"] = 0
     G2L["3"]["TextSize"] = 23
@@ -47,7 +41,6 @@ function DiscordPopup:Create()
     G2L["3"]["Text"] = closeButtonText
     G2L["3"]["Position"] = UDim2.new(0.5, -65, 0.8, 0)
     
-    -- Copy butonu
     G2L["4"] = Instance.new("TextButton", G2L["2"])
     G2L["4"]["TextWrapped"] = true
     G2L["4"]["BorderSizePixel"] = 0
@@ -64,7 +57,6 @@ function DiscordPopup:Create()
     G2L["5"] = Instance.new("UICorner", G2L["4"])
     G2L["5"]["CornerRadius"] = UDim.new(0, 2)
     
-    -- Başlık
     G2L["6"] = Instance.new("TextLabel", G2L["2"])
     G2L["6"]["TextWrapped"] = true
     G2L["6"]["BorderSizePixel"] = 0
@@ -82,7 +74,6 @@ function DiscordPopup:Create()
     G2L["7"] = Instance.new("UICorner", G2L["2"])
     G2L["7"]["CornerRadius"] = UDim.new(0, 4)
     
-    -- Resim 1 (Kesinlikle kaldırmadım!)
     G2L["8"] = Instance.new("ImageLabel", G2L["2"])
     G2L["8"]["BorderSizePixel"] = 0
     G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
@@ -92,7 +83,6 @@ function DiscordPopup:Create()
     G2L["8"]["BackgroundTransparency"] = 1
     G2L["8"]["Position"] = UDim2.new(0.695, -36, 0.21025, 0)
     
-    -- Resim 2 (Bunu da kaldırmadım!)
     G2L["9"] = Instance.new("ImageLabel", G2L["2"])
     G2L["9"]["BorderSizePixel"] = 0
     G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
@@ -102,7 +92,6 @@ function DiscordPopup:Create()
     G2L["9"]["BackgroundTransparency"] = 1
     G2L["9"]["Position"] = UDim2.new(0.29, -50, 0.25641, 0)
     
-    -- Close scripti (local olarak)
     local closeScript = Instance.new("LocalScript", G2L["2"])
     closeScript.Name = "close"
     
@@ -137,7 +126,6 @@ function DiscordPopup:Create()
         fadeOutFrameAndContents(frame)
     end)
     
-    -- Copy scripti (local olarak)
     local copyScript = Instance.new("LocalScript", G2L["2"])
     copyScript.Name = "copy"
     
@@ -147,7 +135,6 @@ function DiscordPopup:Create()
         setclipboard(discordLink)
     end)
     
-    -- Popup animasyonu (local olarak)
     local popupScript = Instance.new("LocalScript", G2L["2"])
     
     frame.Size = UDim2.new(0, 0, 0, 0)
@@ -159,7 +146,6 @@ function DiscordPopup:Create()
     local popOutTween = TweenService:Create(frame, tweenInfo, {Size = targetSize})
     popOutTween:Play()
     
-    -- GUI koruma fonksiyonu
     local function protectUI(sGui)
         if syn and syn.protect_gui then
             syn.protect_gui(sGui)
@@ -176,7 +162,6 @@ function DiscordPopup:Create()
     return G2L["1"]
 end
 
--- Ayarları değiştirme fonksiyonları (local değişkenleri değiştiriyor)
 function DiscordPopup:SetCopyText(text)
     copyButtonText = text
 end
