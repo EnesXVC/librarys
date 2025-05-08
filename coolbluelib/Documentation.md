@@ -50,3 +50,9 @@ cmdBar:AddCommand("hello", {}, "Prints 'Hello'", function(args)
     print("Hello!")
 end)
 ```
+## Create A Command With Arguments
+```lua
+cmdBar:AddCommand("hello", {}, "Prints 'Hello'", function(args)
+    print("Hello!")
+end)
+```
