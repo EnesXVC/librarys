@@ -1,6 +1,5 @@
 local Library3DUI = {}
 
--- Ana UI panelini oluştur
 function Library3DUI:CreateWindow(name, position)
     local window = Instance.new("Part")
     window.Name = name or "3DWindow"
@@ -10,45 +9,54 @@ function Library3DUI:CreateWindow(name, position)
     window.Color = Color3.fromRGB(30, 30, 30)
     window.Parent = workspace
 
-    local gui = Instance.new("SurfaceGui", window)
-    gui.Face = Enum.NormalId.Front
-    gui.AlwaysOnTop = true
-    gui.CanvasSize = Vector2.new(400, 300)
+    local surfaceGui = Instance.new("SurfaceGui")
+    surfaceGui.Name = "3DGUI"
+    surfaceGui.Face = Enum.NormalId.Front
+    surfaceGui.AlwaysOnTop = true
+    surfaceGui.ResetOnSpawn = false
+    surfaceGui.Adornee = window
+    surfaceGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- dikkat 👈
 
-    local frame = Instance.new("Frame", gui)
+    local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, 0, 1, 0)
     frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    frame.Parent = surfaceGui
 
     return {
         Part = window,
-        SurfaceGui = gui,
+        SurfaceGui = surfaceGui,
         Frame = frame
     }
 end
 
--- Buton oluştur
 function Library3DUI:CreateButton(window, text, callback)
-    local button = Instance.new("TextButton", window.Frame)
-    button.Size = UDim2.new(0, 120, 0, 30)
-    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 35)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 160, 0, 35)
+    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 40)
     button.Text = text or "Button"
     button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextScaled = true
+    button.Parent = window.Frame
+
     button.MouseButton1Click:Connect(function()
         if callback then callback() end
     end)
 end
 
--- Toggle oluştur
 function Library3DUI:CreateToggle(window, text, callback)
     local toggleState = false
 
-    local button = Instance.new("TextButton", window.Frame)
-    button.Size = UDim2.new(0, 120, 0, 30)
-    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 35)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 160, 0, 35)
+    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 40)
     button.Text = text .. ": OFF"
     button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextScaled = true
+    button.Parent = window.Frame
 
     button.MouseButton1Click:Connect(function()
         toggleState = not toggleState
