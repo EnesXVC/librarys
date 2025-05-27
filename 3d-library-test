@@ -1,181 +1,60 @@
--- 3D GUI Library v1.0
-local ThreeDUI = {}
+local Library3DUI = {}
 
--- 3D Button oluşturma
-function ThreeDUI.Create3DButton(options)
-    local button = Instance.new("Part")
-    button.Name = options.Name or "3DButton"
-    button.Size = options.Size or Vector3.new(4, 1, 2)
-    button.Position = options.Position or Vector3.new(0, 5, 0)
-    button.Anchored = true
-    button.CanCollide = false
-    button.Color = options.Color or Color3.fromRGB(0, 162, 255)
-    button.Material = options.Material or Enum.Material.Neon
-    
-    local clickDetector = Instance.new("ClickDetector", button)
-    local billboard = Instance.new("BillboardGui", button)
-    billboard.Size = UDim2.new(4, 0, 1, 0)
-    billboard.StudsOffset = Vector3.new(0, 0.6, 0)
-    
-    local textLabel = Instance.new("TextLabel", billboard)
-    textLabel.Size = UDim2.new(1, 0, 1, 0)
-    textLabel.Text = options.Text or "Button"
-    textLabel.TextScaled = true
-    textLabel.BackgroundTransparency = 1
-    textLabel.TextColor3 = options.TextColor or Color3.new(1, 1, 1)
-    
-    button.Parent = options.Parent or workspace
-    
-    -- Etkileşimler
-    local originalColor = button.Color
-    local originalSize = button.Size
-    
-    clickDetector.MouseClick:Connect(function()
-        if options.OnClick then
-            options.OnClick()
-        end
-        
-        -- Animasyon
-        button.Color = Color3.new(0.8, 0.8, 0.8)
-        button.Size = originalSize * 0.95
-        task.wait(0.1)
-        button.Color = originalColor
-        button.Size = originalSize
-    end)
-    
-    clickDetector.MouseHoverEnter:Connect(function()
-        button.Color = Color3.new(
-            math.clamp(originalColor.R * 1.2, 0, 1),
-            math.clamp(originalColor.G * 1.2, 0, 1),
-            math.clamp(originalColor.B * 1.2, 0, 1)
-        )
-    end)
-    
-    clickDetector.MouseHoverLeave:Connect(function()
-        button.Color = originalColor
-    end)
-    
-    return button
+-- Ana UI panelini oluştur
+function Library3DUI:CreateWindow(name, position)
+    local window = Instance.new("Part")
+    window.Name = name or "3DWindow"
+    window.Size = Vector3.new(10, 7, 1)
+    window.Anchored = true
+    window.Position = position or Vector3.new(0, 5, 0)
+    window.Color = Color3.fromRGB(30, 30, 30)
+    window.Parent = workspace
+
+    local gui = Instance.new("SurfaceGui", window)
+    gui.Face = Enum.NormalId.Front
+    gui.AlwaysOnTop = true
+    gui.CanvasSize = Vector2.new(400, 300)
+
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+    return {
+        Part = window,
+        SurfaceGui = gui,
+        Frame = frame
+    }
 end
 
--- 3D Label oluşturma
-function ThreeDUI.Create3DLabel(options)
-    local part = Instance.new("Part")
-    part.Name = options.Name or "3DLabel"
-    part.Size = options.Size or Vector3.new(5, 1, 0.2)
-    part.Position = options.Position or Vector3.new(0, 5, 0)
-    part.Anchored = true
-    part.CanCollide = false
-    part.Transparency = options.Transparency or 1
-    part.Color = options.Color or Color3.new(1, 1, 1)
-    
-    local billboard = Instance.new("BillboardGui", part)
-    billboard.Size = UDim2.new(5, 0, 1, 0)
-    billboard.StudsOffset = Vector3.new(0, 0, 0)
-    
-    local textLabel = Instance.new("TextLabel", billboard)
-    textLabel.Size = UDim2.new(1, 0, 1, 0)
-    textLabel.Text = options.Text or "Label"
-    textLabel.TextScaled = true
-    textLabel.BackgroundTransparency = 1
-    textLabel.TextColor3 = options.TextColor or Color3.new(1, 1, 1)
-    textLabel.Font = options.Font or Enum.Font.SourceSansBold
-    
-    part.Parent = options.Parent or workspace
-    
-    return part
+-- Buton oluştur
+function Library3DUI:CreateButton(window, text, callback)
+    local button = Instance.new("TextButton", window.Frame)
+    button.Size = UDim2.new(0, 120, 0, 30)
+    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 35)
+    button.Text = text or "Button"
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.MouseButton1Click:Connect(function()
+        if callback then callback() end
+    end)
 end
 
--- 3D Tab Sistemi
-function ThreeDUI.Create3DTabSystem(options)
-    local tabSystem = Instance.new("Model")
-    tabSystem.Name = options.Name or "3DTabSystem"
-    
-    -- Tab Butonları için container
-    local tabButtonsContainer = Instance.new("Part")
-    tabButtonsContainer.Name = "TabButtons"
-    tabButtonsContainer.Size = Vector3.new(#options.Tabs * 3 + 1, 1, 0.5)
-    tabButtonsContainer.Position = options.Position or Vector3.new(0, 5, 0)
-    tabButtonsContainer.Anchored = true
-    tabButtonsContainer.CanCollide = false
-    tabButtonsContainer.Color = options.BaseColor or Color3.fromRGB(50, 50, 50)
-    tabButtonsContainer.Parent = tabSystem
-    
-    -- Tab içerikleri için container
-    local contentContainer = Instance.new("Part")
-    contentContainer.Name = "TabContent"
-    contentContainer.Size = Vector3.new(10, 6, 0.5)
-    contentContainer.Position = tabButtonsContainer.Position + Vector3.new(0, -3.5, 0)
-    contentContainer.Anchored = true
-    contentContainer.CanCollide = false
-    contentContainer.Color = options.BaseColor or Color3.fromRGB(50, 50, 50)
-    contentContainer.Parent = tabSystem
-    
-    -- Tablar oluşturuluyor
-    local tabs = {}
-    local currentTab = 1
-    
-    for i, tabInfo in ipairs(options.Tabs) do
-        local tabButton = Instance.new("Part")
-        tabButton.Name = tabInfo.Name.."TabButton"
-        tabButton.Size = Vector3.new(3, 1, 0.5)
-        tabButton.Position = tabButtonsContainer.Position + Vector3.new(-tabButtonsContainer.Size.X/2 + 1.5 + (i-1)*3, 0, 0)
-        tabButton.Anchored = true
-        tabButton.CanCollide = false
-        tabButton.Color = i == 1 and (options.ActiveTabColor or Color3.fromRGB(0, 162, 255)) or (options.InactiveTabColor or Color3.fromRGB(100, 100, 100))
-        tabButton.Parent = tabSystem
-        
-        local clickDetector = Instance.new("ClickDetector", tabButton)
-        
-        local billboard = Instance.new("BillboardGui", tabButton)
-        billboard.Size = UDim2.new(3, 0, 1, 0)
-        billboard.StudsOffset = Vector3.new(0, 0, 0)
-        
-        local textLabel = Instance.new("TextLabel", billboard)
-        textLabel.Size = UDim2.new(1, 0, 1, 0)
-        textLabel.Text = tabInfo.Name
-        textLabel.TextScaled = true
-        textLabel.BackgroundTransparency = 1
-        textLabel.TextColor3 = Color3.new(1, 1, 1)
-        
-        -- Tab içeriği
-        local tabContent = Instance.new("Frame")
-        tabContent.Name = tabInfo.Name.."Content"
-        tabContent.Size = UDim2.new(1, 0, 1, 0)
-        tabContent.BackgroundTransparency = 1
-        tabContent.Visible = i == 1
-        
-        if tabInfo.Content then
-            tabInfo.Content.Parent = tabContent
-        end
-        
-        local contentBillboard = Instance.new("BillboardGui", contentContainer)
-        contentBillboard.Size = UDim2.new(10, 0, 6, 0)
-        contentBillboard.StudsOffset = Vector3.new(0, 0, 0)
-        contentBillboard.Adornee = contentContainer
-        tabContent.Parent = contentBillboard
-        
-        clickDetector.MouseClick:Connect(function()
-            if currentTab == i then return end
-            
-            -- Eski tabı kapat
-            tabSystem:FindFirstChild(options.Tabs[currentTab].Name.."TabButton").Color = options.InactiveTabColor or Color3.fromRGB(100, 100, 100)
-            tabSystem:FindFirstChild(options.Tabs[currentTab].Name.."Content").Visible = false
-            
-            -- Yeni tabı aç
-            currentTab = i
-            tabButton.Color = options.ActiveTabColor or Color3.fromRGB(0, 162, 255)
-            tabContent.Visible = true
-        end)
-        
-        tabs[tabInfo.Name] = {
-            Button = tabButton,
-            Content = tabContent
-        }
-    end
-    
-    tabSystem.Parent = options.Parent or workspace
-    return tabSystem
+-- Toggle oluştur
+function Library3DUI:CreateToggle(window, text, callback)
+    local toggleState = false
+
+    local button = Instance.new("TextButton", window.Frame)
+    button.Size = UDim2.new(0, 120, 0, 30)
+    button.Position = UDim2.new(0, 10, 0, #window.Frame:GetChildren() * 35)
+    button.Text = text .. ": OFF"
+    button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    button.MouseButton1Click:Connect(function()
+        toggleState = not toggleState
+        button.Text = text .. (toggleState and ": ON" or ": OFF")
+        if callback then callback(toggleState) end
+    end)
 end
 
-return ThreeDUI
+return Library3DUI
