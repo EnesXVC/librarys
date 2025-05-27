@@ -1,282 +1,77 @@
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
 local Library3D = {}
 
--- Window objesi için metotlar
-local WindowMeta = {}
-WindowMeta.__index = WindowMeta
+-- Yeni pencere oluştur
+function Library3D:CreateWindow(title, offset)
+    offset = offset or Vector3.new(0, 0, -5) -- Kamera önündeki mesafe
 
--- Tab objesi için metotlar
-local TabMeta = {}
-TabMeta.__index = TabMeta
+    local window = {}
 
--- Buton objesi için metotlar
-local ButtonMeta = {}
-ButtonMeta.__index = ButtonMeta
-
--- Toggle objesi için metotlar
-local ToggleMeta = {}
-ToggleMeta.__index = ToggleMeta
-
--- Helper: Buton oluştur
-local function createButton(parentFrame, text, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.Position = UDim2.new(0, 5, 0, 0)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Text = text
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 18
-    btn.Parent = parentFrame
-    btn.AutoButtonColor = true
-
-    btn.MouseButton1Click:Connect(function()
-        if callback then
-            callback()
-        end
-    end)
-    return btn
-end
-
--- Helper: Toggle oluştur
-local function createToggle(parentFrame, text, callback)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -10, 0, 30)
-    frame.BackgroundTransparency = 1
-    frame.Parent = parentFrame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.new(1,1,1)
-    label.Text = text
-    label.Font = Enum.Font.SourceSans
-    label.TextSize = 18
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(0.3, -5, 0.7, 0)
-    toggleBtn.Position = UDim2.new(0.7, 0, 0.15, 0)
-    toggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-    toggleBtn.Text = "OFF"
-    toggleBtn.Font = Enum.Font.SourceSansBold
-    toggleBtn.TextSize = 16
-    toggleBtn.TextColor3 = Color3.new(1,1,1)
-    toggleBtn.Parent = frame
-    toggleBtn.AutoButtonColor = true
-
-    local toggled = false
-
-    toggleBtn.MouseButton1Click:Connect(function()
-        toggled = not toggled
-        toggleBtn.Text = toggled and "ON" or "OFF"
-        toggleBtn.BackgroundColor3 = toggled and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(100,100,100)
-        if callback then
-            callback(toggled)
-        end
-    end)
-
-    return frame
-end
-
--- Tab oluşturur
-function WindowMeta:CreateTab(name)
-    local tab = {}
-    tab.Name = name
-    tab.ParentWindow = self
-
-    local tabFrame = Instance.new("Frame")
-    tabFrame.Size = UDim2.new(1, 0, 1, -30)
-    tabFrame.Position = UDim2.new(0, 0, 0, 30)
-    tabFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    tabFrame.Visible = false
-    tabFrame.Parent = self.SurfaceGui
-
-    tab.Frame = tabFrame
-    tab.Elements = {}
-
-    -- Buton ekle
-    function tab:CreateButton(text, callback)
-        local btn = createButton(tabFrame, text, callback)
-        btn.Position = UDim2.new(0,5,0,#self.Elements * 35)
-        table.insert(self.Elements, btn)
-        return btn
-    end
-
-    -- Toggle ekle
-    function tab:CreateToggle(text, callback)
-        local toggle = createToggle(tabFrame, text, callback)
-        toggle.Position = UDim2.new(0,5,0,#self.Elements * 35)
-        table.insert(self.Elements, toggle)
-        return toggle
-    end
-
-    return tab
-end
-
--- Sekme butonları yap (üst kısım)
-function WindowMeta:SetupTabs()
-    local tabsFrame = Instance.new("Frame")
-    tabsFrame.Size = UDim2.new(1,0,0,30)
-    tabsFrame.Position = UDim2.new(0,0,0,0)
-    tabsFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-    tabsFrame.Parent = self.SurfaceGui
-
-    self.TabsFrame = tabsFrame
-    self.TabButtons = {}
-
-    for i, tab in ipairs(self.Tabs) do
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(0, 100, 1, 0)
-        btn.Position = UDim2.new(0, (i-1)*100, 0, 0)
-        btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-        btn.TextColor3 = Color3.new(1,1,1)
-        btn.Text = tab.Name
-        btn.Font = Enum.Font.SourceSansBold
-        btn.TextSize = 18
-        btn.Parent = tabsFrame
-
-        btn.MouseButton1Click:Connect(function()
-            -- Tabları kapat aç
-            for _, t in ipairs(self.Tabs) do
-                t.Frame.Visible = false
-            end
-            tab.Frame.Visible = true
-        end)
-
-        table.insert(self.TabButtons, btn)
-    end
-end
-
--- Window oluşturur
-function Library3D:CreateWindow(title, position)
-    local window = setmetatable({}, WindowMeta)
-    window.Name = title or "3D GUI Window"
-    window.Position = position or Vector3.new(0,5,5)
-    window.Tabs = {}
-
-    -- 3D Parça oluştur
+    -- Part (3D panel)
     local part = Instance.new("Part")
-    part.Size = Vector3.new(10, 6, 0.5)
+    part.Size = Vector3.new(12, 7, 0.3)
     part.Anchored = true
     part.CanCollide = false
-    part.Transparency = 0.1
     part.Material = Enum.Material.Neon
-    part.Color = Color3.fromRGB(20,20,20)
-    part.CFrame = CFrame.new(window.Position) * CFrame.Angles(0, math.rad(180), 0)
-    part.Parent = workspace
+    part.Transparency = 0
+    part.Color = Color3.fromRGB(20, 20, 20)
+    part.CastShadow = false
+    part.Parent = Workspace
 
-    -- SurfaceGui oluştur, front face
+    -- SurfaceGui
     local surfaceGui = Instance.new("SurfaceGui")
     surfaceGui.Adornee = part
     surfaceGui.Face = Enum.NormalId.Front
     surfaceGui.AlwaysOnTop = true
     surfaceGui.ResetOnSpawn = false
     surfaceGui.Parent = part
-
-    window.Part = part
-    window.SurfaceGui = surfaceGui
+    surfaceGui.ClipsDescendants = true
+    surfaceGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+    surfaceGui.PixelsPerStud = 50
+    surfaceGui.CanvasSize = Vector2.new(600, 350)
 
     -- Başlık Label
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 30)
-    titleLabel.BackgroundColor3 = Color3.fromRGB(10,10,10)
-    titleLabel.TextColor3 = Color3.new(1,1,1)
+    titleLabel.Size = UDim2.new(1, 0, 0, 40)
+    titleLabel.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    titleLabel.TextColor3 = Color3.new(1, 1, 1)
     titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 22
-    titleLabel.Text = window.Name
+    titleLabel.TextSize = 28
+    titleLabel.Text = title or "3D GUI Window"
     titleLabel.Parent = surfaceGui
 
-    -- Sekme alanı için frame (diğer elementler burada)
+    -- İçerik Frame (buraya diğer elementleri ekleyebilirsin)
     local contentFrame = Instance.new("Frame")
-    contentFrame.Size = UDim2.new(1, 0, 1, -30)
-    contentFrame.Position = UDim2.new(0, 0, 0, 30)
+    contentFrame.Size = UDim2.new(1, 0, 1, -40)
+    contentFrame.Position = UDim2.new(0, 0, 0, 40)
     contentFrame.BackgroundTransparency = 1
     contentFrame.Parent = surfaceGui
-    window.ContentFrame = contentFrame
 
-    -- Tablar tut
-    window.Tabs = {}
+    window.Part = part
+    window.SurfaceGui = surfaceGui
+    window.Content = contentFrame
 
-    -- Tablar arası geçiş için UI oluşturulacak
-    -- Tab butonlarını koyarız
-    window.TabsFrame = nil
-    window.TabButtons = {}
-
-    -- CreateTab metodu window tablarına tab ekler
-    function window:CreateTab(name)
-        local tab = {}
-        setmetatable(tab, TabMeta)
-        tab.Name = name or "Tab"
-        tab.ParentWindow = self
-        tab.Elements = {}
-
-        local tabFrame = Instance.new("Frame")
-        tabFrame.Size = UDim2.new(1, 0, 1, -30)
-        tabFrame.Position = UDim2.new(0, 0, 0, 0)
-        tabFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        tabFrame.Visible = false
-        tabFrame.Parent = self.ContentFrame
-
-        tab.Frame = tabFrame
-
-        function tab:CreateButton(text, callback)
-            local btn = createButton(tabFrame, text, callback)
-            btn.Position = UDim2.new(0, 5, 0, #self.Elements * 35)
-            table.insert(self.Elements, btn)
-            return btn
+    -- Kameraya göre Part'ı konumlandır (her frame)
+    local camera = Workspace.CurrentCamera
+    window.Connection = RunService.RenderStepped:Connect(function()
+        if camera and part then
+            local camCFrame = camera.CFrame
+            local newCFrame = camCFrame * CFrame.new(offset)
+            part.CFrame = newCFrame * CFrame.Angles(0, math.rad(180), 0)
         end
+    end)
 
-        function tab:CreateToggle(text, callback)
-            local toggle = createToggle(tabFrame, text, callback)
-            toggle.Position = UDim2.new(0, 5, 0, #self.Elements * 35)
-            table.insert(self.Elements, toggle)
-            return toggle
+    -- Fonksiyon: pencereyi kapat
+    function window:Destroy()
+        if self.Connection then
+            self.Connection:Disconnect()
+            self.Connection = nil
         end
-
-        table.insert(self.ParentWindow.Tabs, tab)
-        return tab
-    end
-
-    -- Sekme butonlarını oluştur
-    function window:SetupTabs()
-        if self.TabsFrame then
-            self.TabsFrame:Destroy()
-        end
-
-        local tabsFrame = Instance.new("Frame")
-        tabsFrame.Size = UDim2.new(1, 0, 0, 30)
-        tabsFrame.Position = UDim2.new(0, 0, 0, 0)
-        tabsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        tabsFrame.Parent = self.SurfaceGui
-
-        self.TabsFrame = tabsFrame
-        self.TabButtons = {}
-
-        for i, tab in ipairs(self.Tabs) do
-            local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(0, 100, 1, 0)
-            btn.Position = UDim2.new(0, (i - 1) * 100, 0, 0)
-            btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            btn.TextColor3 = Color3.new(1, 1, 1)
-            btn.Text = tab.Name
-            btn.Font = Enum.Font.SourceSansBold
-            btn.TextSize = 18
-            btn.Parent = tabsFrame
-
-            btn.MouseButton1Click:Connect(function()
-                for _, t in ipairs(self.Tabs) do
-                    t.Frame.Visible = false
-                end
-                tab.Frame.Visible = true
-            end)
-
-            table.insert(self.TabButtons, btn)
-        end
-
-        -- İlk tabı göster
-        if #self.Tabs > 0 then
-            self.Tabs[1].Frame.Visible = true
+        if self.Part then
+            self.Part:Destroy()
+            self.Part = nil
         end
     end
 
