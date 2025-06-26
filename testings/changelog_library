@@ -6,6 +6,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     local UserInputService = game:GetService("UserInputService")
     local CoreGui = game:GetService("CoreGui")
     local RunService = game:GetService("RunService")
+    local Players = game:GetService("Players")
     local player = Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
     -- Default settings
@@ -48,7 +49,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         ???
         ]]
     end
-    local ScreenGui_ = Instance.new("ScreenGui")
+    local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Name = "RayfieldChangelogGui"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.Parent = playerGui
@@ -67,7 +68,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     ChangelogDialog.BorderSizePixel = 0
     ChangelogDialog.ZIndex = 100
     ChangelogDialog.Visible = false
-    ChangelogDialog.Parent = ScreenGui_
+    ChangelogDialog.Parent = ScreenGui
 
     -- Dialog styling
     local DialogCorner = Instance.new("UICorner")
@@ -398,6 +399,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         -- Destroy dialog after animation
         task.wait(0.5)
         ChangelogDialog:Destroy()
+        ScreenGui:Destroy()
 
         if notificationsEnabled then
             warn("Changelog closed")
