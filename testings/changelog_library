@@ -6,6 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
+local TextService = game:GetService("TextService")
 
 -- Default theme
 local SelectedTheme = {
@@ -19,49 +20,37 @@ local SelectedTheme = {
 
 -- UI Protection
 local function protectUI(sGui)
-    local function blankFunction(...) return ... end
-    local cloneRef = cloneRef or blankFunction
-
-    local function safeGetService(service)
-        return cloneRef(game:GetService(service)) or game:GetService(service)
-    end
-
-    local coreGui = safeGetService("CoreGui")
-    local players = safeGetService("Players")
-    local localPlayer = players.LocalPlayer
-
-    if (get_hidden_gui or gethui) then
-        local hiddenUI = (get_hidden_gui or gethui)
-        sGui.Name = "\0"
-        sGui.Archivable = false
+    if not sGui then return end
+    
+    if get_hidden_gui or gethui then
+        local hiddenUI = get_hidden_gui or gethui
+        sGui.Name = "ChangelogUI_"..tostring(math.random(10000,99999))
         sGui.Parent = hiddenUI()
-        return sGui
     elseif syn and syn.protect_gui then
-        sGui.Name = "\0"
-        sGui.Archivable = false
         syn.protect_gui(sGui)
-        sGui.Parent = coreGui
-        return sGui
+        sGui.Parent = CoreGui
     else
-        sGui.Name = "\0"
-        sGui.Archivable = false
-        sGui.Parent = coreGui
-        return sGui
+        sGui.Parent = CoreGui
     end
+    return sGui
 end
 
 -- Notification System
 function SearchAndChangelogLibrary:Notify(data)
     if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
         -- Rayfield style notification
+        local notificationGui = Instance.new("ScreenGui")
+        protectUI(notificationGui)
+        
         local notification = Instance.new("Frame")
         notification.Size = UDim2.new(0, 300, 0, 60)
-        notification.Position = UDim2.new(1, -320, 1, -70)
+        notification.Position = UDim2.new(1, 10, 1, -70)
         notification.AnchorPoint = Vector2.new(1, 1)
         notification.BackgroundColor3 = SelectedTheme.Background
         notification.BackgroundTransparency = 0.5
         notification.BorderSizePixel = 0
         notification.ZIndex = 100
+        notification.Parent = notificationGui
         
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0, 6)
@@ -71,18 +60,6 @@ function SearchAndChangelogLibrary:Notify(data)
         stroke.Color = SelectedTheme.ElementStroke
         stroke.Thickness = 1
         stroke.Parent = notification
-        
-        local shadow = Instance.new("ImageLabel")
-        shadow.Image = "rbxassetid://1316045217"
-        shadow.Size = UDim2.new(1, 26, 1, 26)
-        shadow.Position = UDim2.new(0, -13, 0, -13)
-        shadow.BackgroundTransparency = 1
-        shadow.ImageTransparency = 0.5
-        shadow.ImageColor3 = SelectedTheme.Shadow
-        shadow.ScaleType = Enum.ScaleType.Slice
-        shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-        shadow.ZIndex = 99
-        shadow.Parent = notification
         
         local title = Instance.new("TextLabel")
         title.Text = data.Title or "Notification"
@@ -117,27 +94,29 @@ function SearchAndChangelogLibrary:Notify(data)
         icon.ZIndex = 102
         icon.Parent = notification
         
-        notification.Parent = protectUI(Instance.new("ScreenGui"))
-        
         -- Animation
-        notification.Position = UDim2.new(1, 300, 1, -70)
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -320, 1, -70)}):Play()
+        notification.Position = UDim2.new(1, 310, 1, -70)
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -10, 1, -70)}):Play()
         
         task.wait(data.Duration or 3)
         
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 300, 1, -70)}):Play()
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 310, 1, -70)}):Play()
         task.wait(0.3)
-        notification:Destroy()
+        notificationGui:Destroy()
     else
-        -- Luna style notification (simplified)
+        -- Luna style notification
+        local notificationGui = Instance.new("ScreenGui")
+        protectUI(notificationGui)
+        
         local notification = Instance.new("Frame")
         notification.Size = UDim2.new(0, 300, 0, 60)
-        notification.Position = UDim2.new(1, -320, 1, -70)
+        notification.Position = UDim2.new(1, 10, 1, -70)
         notification.AnchorPoint = Vector2.new(1, 1)
         notification.BackgroundColor3 = SelectedTheme.Background
         notification.BackgroundTransparency = 0.5
         notification.BorderSizePixel = 0
         notification.ZIndex = 100
+        notification.Parent = notificationGui
         
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0, 6)
@@ -176,17 +155,15 @@ function SearchAndChangelogLibrary:Notify(data)
         icon.ZIndex = 102
         icon.Parent = notification
         
-        notification.Parent = protectUI(Instance.new("ScreenGui"))
-        
         -- Animation
-        notification.Position = UDim2.new(1, 300, 1, -70)
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -320, 1, -70)}):Play()
+        notification.Position = UDim2.new(1, 310, 1, -70)
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -10, 1, -70)}):Play()
         
         task.wait(data.Duration or 3)
         
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 300, 1, -70)}):Play()
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 310, 1, -70)}):Play()
         task.wait(0.3)
-        notification:Destroy()
+        notificationGui:Destroy()
     end
 end
 
@@ -231,7 +208,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
 
     -- Create main UI
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "SearchAndChangelogGui"
+    screenGui.Name = "SearchAndChangelogUI"
     protectUI(screenGui)
 
     local ChangelogDialog = Instance.new("Frame")
@@ -252,6 +229,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     ChangelogDialog.Visible = false
     ChangelogDialog.Parent = screenGui
 
+    -- Dialog styling
     local DialogCorner = Instance.new("UICorner")
     DialogCorner.CornerRadius = UDim.new(0, 6)
     DialogCorner.Parent = ChangelogDialog
@@ -275,6 +253,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     DialogShadow.ZIndex = 99
     DialogShadow.Parent = ChangelogDialog
 
+    -- Title
     local DialogTitle = Instance.new("TextLabel")
     DialogTitle.Name = "Title"
     DialogTitle.Size = UDim2.new(1, -20, 0, 30)
@@ -288,6 +267,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     DialogTitle.ZIndex = 101
     DialogTitle.Parent = ChangelogDialog
 
+    -- Search bar (if enabled)
     local SearchBar, SearchStroke, SearchIcon, SearchInput
     if showSearchBar then
         SearchBar = Instance.new("Frame")
@@ -324,7 +304,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         SearchInput.Name = "Input"
         SearchInput.Text = ""
         SearchInput.PlaceholderText = "Search..."
-        SearchInput.PlaceholderColor3 = SelectedTheme.TextColor:Lerp(Color3.new(0, 0, 0), 0.5)
+        SearchInput.PlaceholderColor3 = (SelectedTheme.TextColor):Lerp(Color3.new(0, 0, 0), 0.5)
         SearchInput.TextColor3 = SelectedTheme.TextColor
         SearchInput.TextTransparency = 0.2
         SearchInput.TextSize = isMobile and 14 or 16
@@ -337,6 +317,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         SearchInput.Parent = SearchBar
     end
 
+    -- Changelog content
     local ChangelogScroll = Instance.new("ScrollingFrame")
     ChangelogScroll.Name = "ChangelogScroll"
     ChangelogScroll.Size = UDim2.new(1, -20, 1, isMobile and (showSearchBar and -125 or -90) or (showSearchBar and -150 or -110))
@@ -353,6 +334,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     ScrollListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     ScrollListLayout.Parent = ChangelogScroll
 
+    -- Function to add text labels
     local function addTextLabel(text, isHeader, layoutOrder)
         local TextLabel = Instance.new("TextLabel")
         TextLabel.Size = UDim2.new(1, -10, 0, 0)
@@ -380,6 +362,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         return TextLabel
     end
 
+    -- Add changelog content
     local originalLabels = {}
     local layoutOrder = 0
     for line in changelogText:gmatch("[^\r\n]+") do
@@ -390,10 +373,12 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         layoutOrder = layoutOrder + 1
     end
 
+    -- Update canvas size
     ScrollListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         ChangelogScroll.CanvasSize = UDim2.new(0, 0, 0, ScrollListLayout.AbsoluteContentSize.Y)
     end)
 
+    -- Search functionality
     if showSearchBar then
         SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
             local query = SearchInput.Text:lower()
@@ -419,6 +404,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         end)
     end
 
+    -- Close button
     local CloseButton = Instance.new("TextButton")
     CloseButton.Name = "CloseButton"
     CloseButton.Size = UDim2.new(0, isMobile and 60 or 80, 0, isMobile and 25 or 30)
@@ -448,6 +434,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         TweenService:Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
     end)
 
+    -- Alternate button
     local AltButton = Instance.new("TextButton")
     AltButton.Name = "AltButton"
     AltButton.Size = UDim2.new(0, isMobile and 100 or 120, 0, isMobile and 25 or 30)
@@ -481,15 +468,16 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         if setclipboard then
             setclipboard(altButton.Clipboard)
             if notificationsEnabled then
-                warn(altButton.Name .. " link copied to clipboard!")
+                self:Notify(altButtonNotification.Success)
             end
         else
             if notificationsEnabled then
-                warn("Failed to copy " .. altButton.Name .. " link (setclipboard not available)")
+                self:Notify(altButtonNotification.Failure)
             end
         end
     end)
 
+    -- Show/hide functions
     local function showDialog()
         ChangelogDialog.Visible = true
         ChangelogDialog.Size = UDim2.new(0, 0, 0, 0)
@@ -509,6 +497,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
             SearchInput.TextTransparency = 1
         end
         
+        -- Animate dialog opening
         TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, dialogWidth, 0, dialogHeight)}):Play()
         TweenService:Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
         TweenService:Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
@@ -524,6 +513,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
             TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
         end
         
+        -- Animate text appearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
                 label.TextTransparency = 1
@@ -535,6 +525,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     end
 
     local function hideDialog()
+        -- Animate dialog closing
         TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
             Size = UDim2.new(0, 0, 0, 0),
             BackgroundTransparency = 1
@@ -554,23 +545,26 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
             TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
         end
         
+        -- Animate text disappearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
                 TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
             end
         end
 
+        -- Destroy dialog after animation
         task.wait(0.5)
-        ChangelogDialog:Destroy()
-        ScreenGui:Destroy()
+        screenGui:Destroy()
 
         if notificationsEnabled then
-            warn("Changelog closed")
+            self:Notify(notification)
         end
     end
 
+    -- Close button handler
     CloseButton.MouseButton1Click:Connect(hideDialog)
 
+    -- Dragging functionality
     local dragging
     local dragInput
     local dragStart
@@ -608,8 +602,10 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         end
     end)
 
+    -- Show the dialog
     showDialog()
     
+    -- Return control functions
     return {
         Hide = hideDialog,
         Show = showDialog
