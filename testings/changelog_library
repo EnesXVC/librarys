@@ -6,7 +6,8 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     local UserInputService = game:GetService("UserInputService")
     local CoreGui = game:GetService("CoreGui")
     local RunService = game:GetService("RunService")
-    
+    local player = Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
     -- Default settings
     local SelectedTheme = {
         Background = Color3.fromRGB(30, 30, 30),
@@ -47,7 +48,10 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         ???
         ]]
     end
-
+    local ScreenGui_ = Instance.new("ScreenGui")
+    ScreenGui.Name = "RayfieldChangelogGui"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = playerGui
     -- Create main dialog
     local ChangelogDialog = Instance.new("Frame")
     ChangelogDialog.Name = "ChangelogDialog"
@@ -63,7 +67,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     ChangelogDialog.BorderSizePixel = 0
     ChangelogDialog.ZIndex = 100
     ChangelogDialog.Visible = false
-    ChangelogDialog.Parent = CoreGui
+    ChangelogDialog.Parent = ScreenGui_
 
     -- Dialog styling
     local DialogCorner = Instance.new("UICorner")
