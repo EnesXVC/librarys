@@ -5,6 +5,7 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     local TweenService = game:GetService("TweenService")
     local UserInputService = game:GetService("UserInputService")
     local CoreGui = game:GetService("CoreGui")
+    local RunService = game:GetService("RunService")
     
     -- Default settings
     local SelectedTheme = {
@@ -264,10 +265,10 @@ function RayfieldChangelog:CreateChangelogDialog(config)
 
     -- Button hover effects
     CloseButton.MouseEnter:Connect(function()
-        game:GetService("TweenService"):Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+        TweenService:Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
     end)
     CloseButton.MouseLeave:Connect(function()
-        game:GetService("TweenService"):Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+        TweenService:Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
     end)
 
     -- Alternate button (e.g., Discord)
@@ -295,10 +296,10 @@ function RayfieldChangelog:CreateChangelogDialog(config)
 
     -- Button hover effects
     AltButton.MouseEnter:Connect(function()
-        game:GetService("TweenService"):Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+        TweenService:Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
     end)
     AltButton.MouseLeave:Connect(function()
-        game:GetService("TweenService"):Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+        TweenService:Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
     end)
 
     -- Alternate button click handler
@@ -336,26 +337,26 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         end
         
         -- Animate dialog opening
-        game:GetService("TweenService"):Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, dialogWidth, 0, dialogHeight)}):Play()
-        game:GetService("TweenService"):Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
-        game:GetService("TweenService"):Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
-        game:GetService("TweenService"):Create(CloseButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
-        game:GetService("TweenService"):Create(CloseStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
-        game:GetService("TweenService"):Create(AltButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
-        game:GetService("TweenService"):Create(AltStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+        TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, dialogWidth, 0, dialogHeight)}):Play()
+        TweenService:Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
+        TweenService:Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+        TweenService:Create(CloseButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
+        TweenService:Create(CloseStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+        TweenService:Create(AltButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
+        TweenService:Create(AltStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
         
         if showSearchBar then
-            game:GetService("TweenService"):Create(SearchBar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.9}):Play()
-            game:GetService("TweenService"):Create(SearchStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0.8}):Play()
-            game:GetService("TweenService"):Create(SearchIcon, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
-            game:GetService("TweenService"):Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
+            TweenService:Create(SearchBar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.9}):Play()
+            TweenService:Create(SearchStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0.8}):Play()
+            TweenService:Create(SearchIcon, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
+            TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
         end
         
         -- Animate text appearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
                 label.TextTransparency = 1
-                local tween = game:GetService("TweenService"):Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0})
+                local tween = TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0})
                 tween:Play()
                 task.wait(0.02)
             end
@@ -364,29 +365,29 @@ function RayfieldChangelog:CreateChangelogDialog(config)
 
     local function hideDialog()
         -- Animate dialog closing
-        game:GetService("TweenService"):Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+        TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
             Size = UDim2.new(0, 0, 0, 0),
             BackgroundTransparency = 1
         }):Play()
         
-        game:GetService("TweenService"):Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(CloseButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1, BackgroundTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(CloseStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-        game:GetService("TweenService"):Create(AltButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1, BackgroundTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(AltStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+        TweenService:Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+        TweenService:Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+        TweenService:Create(CloseButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1, BackgroundTransparency = 1}):Play()
+        TweenService:Create(CloseStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+        TweenService:Create(AltButton, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1, BackgroundTransparency = 1}):Play()
+        TweenService:Create(AltStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
         
         if showSearchBar then
-            game:GetService("TweenService"):Create(SearchBar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-            game:GetService("TweenService"):Create(SearchStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-            game:GetService("TweenService"):Create(SearchIcon, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-            game:GetService("TweenService"):Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+            TweenService:Create(SearchBar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+            TweenService:Create(SearchStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+            TweenService:Create(SearchIcon, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+            TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
         end
         
         -- Animate text disappearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
-                game:GetService("TweenService"):Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+                TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
             end
         end
 
