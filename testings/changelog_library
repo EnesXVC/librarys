@@ -1,32 +1,211 @@
-local RayfieldChangelog = {}
+local SearchAndChangelogLibrary = {}
 
-function RayfieldChangelog:CreateChangelogDialog(config)
-    -- Dependencies
-    local TweenService = game:GetService("TweenService")
-    local UserInputService = game:GetService("UserInputService")
-    local CoreGui = game:GetService("CoreGui")
-    local RunService = game:GetService("RunService")
-    local Players = game:GetService("Players")
-    local player = Players.LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui")
-    -- Default settings
-    local SelectedTheme = {
-        Background = Color3.fromRGB(30, 30, 30),
-        ElementStroke = Color3.fromRGB(100, 100, 100),
-        Shadow = Color3.fromRGB(0, 0, 0),
-        TextColor = Color3.fromRGB(255, 255, 255),
-        ElementBackground = Color3.fromRGB(40, 40, 40),
-        ElementBackgroundHover = Color3.fromRGB(60, 60, 60)
-    }
-    
-    local minSize = Vector2.new(500, 400)
-    
+-- Services
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+
+-- Default theme
+local SelectedTheme = {
+    Background = Color3.fromRGB(30, 30, 30),
+    ElementStroke = Color3.fromRGB(100, 100, 100),
+    Shadow = Color3.fromRGB(0, 0, 0),
+    TextColor = Color3.fromRGB(255, 255, 255),
+    ElementBackground = Color3.fromRGB(40, 40, 40),
+    ElementBackgroundHover = Color3.fromRGB(60, 60, 60)
+}
+
+-- UI Protection
+local function protectUI(sGui)
+    local function blankFunction(...) return ... end
+    local cloneRef = cloneRef or blankFunction
+
+    local function safeGetService(service)
+        return cloneRef(game:GetService(service)) or game:GetService(service)
+    end
+
+    local coreGui = safeGetService("CoreGui")
+    local players = safeGetService("Players")
+    local localPlayer = players.LocalPlayer
+
+    if (get_hidden_gui or gethui) then
+        local hiddenUI = (get_hidden_gui or gethui)
+        sGui.Name = "\0"
+        sGui.Archivable = false
+        sGui.Parent = hiddenUI()
+        return sGui
+    elseif syn and syn.protect_gui then
+        sGui.Name = "\0"
+        sGui.Archivable = false
+        syn.protect_gui(sGui)
+        sGui.Parent = coreGui
+        return sGui
+    else
+        sGui.Name = "\0"
+        sGui.Archivable = false
+        sGui.Parent = coreGui
+        return sGui
+    end
+end
+
+-- Notification System
+function SearchAndChangelogLibrary:Notify(data)
+    if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
+        -- Rayfield style notification
+        local notification = Instance.new("Frame")
+        notification.Size = UDim2.new(0, 300, 0, 60)
+        notification.Position = UDim2.new(1, -320, 1, -70)
+        notification.AnchorPoint = Vector2.new(1, 1)
+        notification.BackgroundColor3 = SelectedTheme.Background
+        notification.BackgroundTransparency = 0.5
+        notification.BorderSizePixel = 0
+        notification.ZIndex = 100
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = notification
+        
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = SelectedTheme.ElementStroke
+        stroke.Thickness = 1
+        stroke.Parent = notification
+        
+        local shadow = Instance.new("ImageLabel")
+        shadow.Image = "rbxassetid://1316045217"
+        shadow.Size = UDim2.new(1, 26, 1, 26)
+        shadow.Position = UDim2.new(0, -13, 0, -13)
+        shadow.BackgroundTransparency = 1
+        shadow.ImageTransparency = 0.5
+        shadow.ImageColor3 = SelectedTheme.Shadow
+        shadow.ScaleType = Enum.ScaleType.Slice
+        shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+        shadow.ZIndex = 99
+        shadow.Parent = notification
+        
+        local title = Instance.new("TextLabel")
+        title.Text = data.Title or "Notification"
+        title.TextColor3 = SelectedTheme.TextColor
+        title.TextSize = 18
+        title.Font = Enum.Font.SourceSansBold
+        title.Size = UDim2.new(1, -40, 0, 20)
+        title.Position = UDim2.new(0, 40, 0, 10)
+        title.BackgroundTransparency = 1
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.ZIndex = 101
+        title.Parent = notification
+        
+        local content = Instance.new("TextLabel")
+        content.Text = data.Content or ""
+        content.TextColor3 = SelectedTheme.TextColor
+        content.TextTransparency = 0.35
+        content.TextSize = 14
+        content.Font = Enum.Font.SourceSans
+        content.Size = UDim2.new(1, -40, 0, 20)
+        content.Position = UDim2.new(0, 40, 0, 30)
+        content.BackgroundTransparency = 1
+        content.TextXAlignment = Enum.TextXAlignment.Left
+        content.ZIndex = 101
+        content.Parent = notification
+        
+        local icon = Instance.new("ImageLabel")
+        icon.Image = "rbxassetid://"..tostring(data.Image or 10723346871)
+        icon.Size = UDim2.new(0, 24, 0, 24)
+        icon.Position = UDim2.new(0, 10, 0, 10)
+        icon.BackgroundTransparency = 1
+        icon.ZIndex = 102
+        icon.Parent = notification
+        
+        notification.Parent = protectUI(Instance.new("ScreenGui"))
+        
+        -- Animation
+        notification.Position = UDim2.new(1, 300, 1, -70)
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -320, 1, -70)}):Play()
+        
+        task.wait(data.Duration or 3)
+        
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 300, 1, -70)}):Play()
+        task.wait(0.3)
+        notification:Destroy()
+    else
+        -- Luna style notification (simplified)
+        local notification = Instance.new("Frame")
+        notification.Size = UDim2.new(0, 300, 0, 60)
+        notification.Position = UDim2.new(1, -320, 1, -70)
+        notification.AnchorPoint = Vector2.new(1, 1)
+        notification.BackgroundColor3 = SelectedTheme.Background
+        notification.BackgroundTransparency = 0.5
+        notification.BorderSizePixel = 0
+        notification.ZIndex = 100
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = notification
+        
+        local title = Instance.new("TextLabel")
+        title.Text = data.Title or "Notification"
+        title.TextColor3 = SelectedTheme.TextColor
+        title.TextSize = 16
+        title.Font = Enum.Font.SourceSansBold
+        title.Size = UDim2.new(1, -40, 0, 20)
+        title.Position = UDim2.new(0, 40, 0, 10)
+        title.BackgroundTransparency = 1
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.ZIndex = 101
+        title.Parent = notification
+        
+        local content = Instance.new("TextLabel")
+        content.Text = data.Content or ""
+        content.TextColor3 = SelectedTheme.TextColor
+        content.TextTransparency = 0.35
+        content.TextSize = 14
+        content.Font = Enum.Font.SourceSans
+        content.Size = UDim2.new(1, -40, 0, 20)
+        content.Position = UDim2.new(0, 40, 0, 30)
+        content.BackgroundTransparency = 1
+        content.TextXAlignment = Enum.TextXAlignment.Left
+        content.ZIndex = 101
+        content.Parent = notification
+        
+        local icon = Instance.new("ImageLabel")
+        icon.Image = "rbxassetid://"..tostring(data.Image or 10723346871)
+        icon.Size = UDim2.new(0, 24, 0, 24)
+        icon.Position = UDim2.new(0, 10, 0, 10)
+        icon.BackgroundTransparency = 1
+        icon.ZIndex = 102
+        icon.Parent = notification
+        
+        notification.Parent = protectUI(Instance.new("ScreenGui"))
+        
+        -- Animation
+        notification.Position = UDim2.new(1, 300, 1, -70)
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -320, 1, -70)}):Play()
+        
+        task.wait(data.Duration or 3)
+        
+        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 300, 1, -70)}):Play()
+        task.wait(0.3)
+        notification:Destroy()
+    end
+end
+
+-- Main Changelog Function
+function SearchAndChangelogLibrary:CreateChangelogDialog(config)
     -- Config processing
     local changelogText = type(config) == "string" and config or (type(config) == "table" and config.ChangelogText or "")
     local showSearchBar = type(config) == "table" and config.Search ~= false
     local dialogTitle = type(config) == "table" and config.Title or "Changelog"
     local notificationsEnabled = type(config) == "table" and config.Notifications ~= false
     local altButton = type(config) == "table" and config.Altbutton or { Name = "Join Discord", Clipboard = "discord.gg/example" }
+    local notification = type(config) == "table" and config.Notification or { Title = "Changelog Closed", Content = "The changelog has been closed", Duration = 2.5, Image = 10723346871 }
+    local altButtonNotification = type(config) == "table" and config.AltbuttonNotification or {
+        Success = { Title = "Copied", Content = "The link has been copied to your clipboard!", Duration = 6.5, Image = 10709798443 },
+        Failure = { Title = "Failed", Content = "Your executor doesn't support setclipboard.", Duration = 6.5, Image = 10709799124 }
+    }
+    
+    -- Set notification style
+    self.NotifyLibrary = type(config) == "table" and config.NotifyLibrary or "Rayfield"
     
     if changelogText == "" then
         changelogText = [[
@@ -49,17 +228,20 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         ???
         ]]
     end
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "RayfieldChangelogGui"
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.Parent = playerGui
-    -- Create main dialog
+
+    -- Create main UI
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "SearchAndChangelogGui"
+    protectUI(screenGui)
+
     local ChangelogDialog = Instance.new("Frame")
     ChangelogDialog.Name = "ChangelogDialog"
     local screenSize = workspace.CurrentCamera.ViewportSize
+    local minSize = Vector2.new(500, 400)
     local isMobile = UserInputService.TouchEnabled or (screenSize.X < minSize.X and screenSize.Y < minSize.Y)
     local dialogWidth = isMobile and math.clamp(screenSize.X * 0.8, 250, 450) or math.clamp(screenSize.X * 0.4, 400, 550)
     local dialogHeight = isMobile and math.clamp(screenSize.Y * 0.6, 300, 550) or math.clamp(screenSize.Y * 0.6, 400, 600)
+    
     ChangelogDialog.Size = UDim2.new(0, dialogWidth, 0, dialogHeight)
     ChangelogDialog.Position = UDim2.new(0.5, 0, 0, isMobile and 40 or 60)
     ChangelogDialog.AnchorPoint = Vector2.new(0.5, 0)
@@ -68,9 +250,8 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     ChangelogDialog.BorderSizePixel = 0
     ChangelogDialog.ZIndex = 100
     ChangelogDialog.Visible = false
-    ChangelogDialog.Parent = ScreenGui
+    ChangelogDialog.Parent = screenGui
 
-    -- Dialog styling
     local DialogCorner = Instance.new("UICorner")
     DialogCorner.CornerRadius = UDim.new(0, 6)
     DialogCorner.Parent = ChangelogDialog
@@ -94,7 +275,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     DialogShadow.ZIndex = 99
     DialogShadow.Parent = ChangelogDialog
 
-    -- Title
     local DialogTitle = Instance.new("TextLabel")
     DialogTitle.Name = "Title"
     DialogTitle.Size = UDim2.new(1, -20, 0, 30)
@@ -108,7 +288,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     DialogTitle.ZIndex = 101
     DialogTitle.Parent = ChangelogDialog
 
-    -- Search bar (if enabled)
     local SearchBar, SearchStroke, SearchIcon, SearchInput
     if showSearchBar then
         SearchBar = Instance.new("Frame")
@@ -158,7 +337,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         SearchInput.Parent = SearchBar
     end
 
-    -- Changelog content
     local ChangelogScroll = Instance.new("ScrollingFrame")
     ChangelogScroll.Name = "ChangelogScroll"
     ChangelogScroll.Size = UDim2.new(1, -20, 1, isMobile and (showSearchBar and -125 or -90) or (showSearchBar and -150 or -110))
@@ -175,7 +353,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     ScrollListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     ScrollListLayout.Parent = ChangelogScroll
 
-    -- Function to add text labels
     local function addTextLabel(text, isHeader, layoutOrder)
         local TextLabel = Instance.new("TextLabel")
         TextLabel.Size = UDim2.new(1, -10, 0, 0)
@@ -203,7 +380,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         return TextLabel
     end
 
-    -- Add changelog content
     local originalLabels = {}
     local layoutOrder = 0
     for line in changelogText:gmatch("[^\r\n]+") do
@@ -214,12 +390,10 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         layoutOrder = layoutOrder + 1
     end
 
-    -- Update canvas size
     ScrollListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         ChangelogScroll.CanvasSize = UDim2.new(0, 0, 0, ScrollListLayout.AbsoluteContentSize.Y)
     end)
 
-    -- Search functionality
     if showSearchBar then
         SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
             local query = SearchInput.Text:lower()
@@ -245,7 +419,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         end)
     end
 
-    -- Close button
     local CloseButton = Instance.new("TextButton")
     CloseButton.Name = "CloseButton"
     CloseButton.Size = UDim2.new(0, isMobile and 60 or 80, 0, isMobile and 25 or 30)
@@ -268,7 +441,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     CloseStroke.Thickness = 1
     CloseStroke.Parent = CloseButton
 
-    -- Button hover effects
     CloseButton.MouseEnter:Connect(function()
         TweenService:Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
     end)
@@ -276,7 +448,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         TweenService:Create(CloseButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
     end)
 
-    -- Alternate button (e.g., Discord)
     local AltButton = Instance.new("TextButton")
     AltButton.Name = "AltButton"
     AltButton.Size = UDim2.new(0, isMobile and 100 or 120, 0, isMobile and 25 or 30)
@@ -299,7 +470,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     AltStroke.Thickness = 1
     AltStroke.Parent = AltButton
 
-    -- Button hover effects
     AltButton.MouseEnter:Connect(function()
         TweenService:Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
     end)
@@ -307,7 +477,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         TweenService:Create(AltButton, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
     end)
 
-    -- Alternate button click handler
     AltButton.MouseButton1Click:Connect(function()
         if setclipboard then
             setclipboard(altButton.Clipboard)
@@ -321,7 +490,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         end
     end)
 
-    -- Show/hide functions
     local function showDialog()
         ChangelogDialog.Visible = true
         ChangelogDialog.Size = UDim2.new(0, 0, 0, 0)
@@ -341,7 +509,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
             SearchInput.TextTransparency = 1
         end
         
-        -- Animate dialog opening
         TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, dialogWidth, 0, dialogHeight)}):Play()
         TweenService:Create(DialogShadow, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.5}):Play()
         TweenService:Create(DialogTitle, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
@@ -357,7 +524,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
             TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
         end
         
-        -- Animate text appearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
                 label.TextTransparency = 1
@@ -369,7 +535,6 @@ function RayfieldChangelog:CreateChangelogDialog(config)
     end
 
     local function hideDialog()
-        -- Animate dialog closing
         TweenService:Create(ChangelogDialog, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
             Size = UDim2.new(0, 0, 0, 0),
             BackgroundTransparency = 1
@@ -389,14 +554,12 @@ function RayfieldChangelog:CreateChangelogDialog(config)
             TweenService:Create(SearchInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
         end
         
-        -- Animate text disappearing
         for _, label in ipairs(ChangelogScroll:GetChildren()) do
             if label:IsA("TextLabel") then
                 TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
             end
         end
 
-        -- Destroy dialog after animation
         task.wait(0.5)
         ChangelogDialog:Destroy()
         ScreenGui:Destroy()
@@ -406,10 +569,8 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         end
     end
 
-    -- Close button handler
     CloseButton.MouseButton1Click:Connect(hideDialog)
 
-    -- Dragging functionality
     local dragging
     local dragInput
     local dragStart
@@ -447,14 +608,12 @@ function RayfieldChangelog:CreateChangelogDialog(config)
         end
     end)
 
-    -- Show the dialog
     showDialog()
     
-    -- Return control functions
     return {
         Hide = hideDialog,
         Show = showDialog
     }
 end
 
-return RayfieldChangelog
+return SearchAndChangelogLibrary
