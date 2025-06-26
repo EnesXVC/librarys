@@ -6,7 +6,6 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EnesX
 ```lua
 local dialog = Library:CreateChangelogDialog({
     Title = "My Changelog",
--- Here is the changelog or the supported games list. If you are creating a supported games list, use the format: 1.Game\n2.Game\n3.Game\n...etc.
     ChangelogText = [[
     Version: 1.0
     New Features:
