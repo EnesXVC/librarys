@@ -330,10 +330,16 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         TextLabel.Font = isHeader and Enum.Font.SourceSansBold or Enum.Font.SourceSans
         TextLabel.TextXAlignment = Enum.TextXAlignment.Left
         TextLabel.TextWrapped = true
+        TextLabel.RichText = true
         TextLabel.LayoutOrder = layoutOrder
         TextLabel.ZIndex = 102
         
-        if isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]")) then
+        -- Özel formatlama için
+        if text:find("\\n") then
+            TextLabel.Text = text:gsub("\\n", "\n") -- \\n'yi gerçek \n'ye çevir
+        end
+        
+        if isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]") then
             TextLabel.BackgroundTransparency = 0
             TextLabel.BackgroundColor3 = SelectedTheme.ElementBackgroundHover
             local HighlightCorner = Instance.new("UICorner")
