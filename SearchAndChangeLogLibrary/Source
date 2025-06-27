@@ -331,23 +331,15 @@ local function addTextLabel(text, isHeader, layoutOrder)
     TextLabel.TextWrapped = true
     TextLabel.LayoutOrder = layoutOrder
     TextLabel.ZIndex = 102
-
-    if text:match("\r") or text:match("\n") then
-        TextLabel.Text = text:gsub("\r", ""):gsub("\n", " ")
-        TextLabel.BackgroundTransparency = 0
-        TextLabel.BackgroundColor3 = SelectedTheme.ElementBackgroundHover
-        TextLabel.TextSize = isMobile and 20 or 24
-        local HighlightCorner = Instance.new("UICorner")
-        HighlightCorner.CornerRadius = UDim.new(0, 4)
-        HighlightCorner.Parent = TextLabel
-    elseif isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]")) then
+    
+    if isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]") or text:match("^Version") or text:match("^Release Date") or text:match("^What's New") or text:match("^Improvements") or text:match("^Bug Fixes") or text:match("^Known Issues") or text:match("^Notes")) then
         TextLabel.BackgroundTransparency = 0
         TextLabel.BackgroundColor3 = SelectedTheme.ElementBackgroundHover
         local HighlightCorner = Instance.new("UICorner")
         HighlightCorner.CornerRadius = UDim.new(0, 4)
         HighlightCorner.Parent = TextLabel
     end
-
+    
     TextLabel.Parent = ChangelogScroll
     return TextLabel
 end
