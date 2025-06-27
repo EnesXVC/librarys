@@ -44,6 +44,7 @@ local dialog = Library:CreateChangelogDialog({
         }
     }
 })
+-- And Mobile Support Pc Support
 ```
 ### Credits:
 - [EnesXVC](https://github.com/EnesXVC) (Library)
