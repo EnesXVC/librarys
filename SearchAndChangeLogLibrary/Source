@@ -332,7 +332,7 @@ local function addTextLabel(text, isHeader, layoutOrder)
     TextLabel.LayoutOrder = layoutOrder
     TextLabel.ZIndex = 102
 
-    if text:match("^Version\r") or text:match("^Version\n") then
+    if text:match("\r") or text:match("\n") then
         TextLabel.Text = text:gsub("\r", ""):gsub("\n", " ")
         TextLabel.BackgroundTransparency = 0
         TextLabel.BackgroundColor3 = SelectedTheme.ElementBackgroundHover
