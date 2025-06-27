@@ -34,7 +34,6 @@ end
 
 function SearchAndChangelogLibrary:Notify(data)
     if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
-        -- Rayfield style notification
         local notificationGui = Instance.new("ScreenGui")
         protectUI(notificationGui)
         
