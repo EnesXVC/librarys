@@ -334,12 +334,22 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         TextLabel.LayoutOrder = layoutOrder
         TextLabel.ZIndex = 102
         
-        -- Özel formatlama için
-        if text:find("\\n") then
-            TextLabel.Text = text:gsub("\\n", "\n") -- \\n'yi gerçek \n'ye çevir
-        end
+     local function addTextLabel(text, isHeader, layoutOrder)
+        local TextLabel = Instance.new("TextLabel")
+        TextLabel.Size = UDim2.new(1, -10, 0, 0)
+        TextLabel.AutomaticSize = Enum.AutomaticSize.Y
+        TextLabel.BackgroundTransparency = 1
+        TextLabel.Text = text
+        TextLabel.TextColor3 = SelectedTheme.TextColor
+        TextLabel.TextTransparency = 0
+        TextLabel.TextSize = isMobile and (isHeader and 18 or 16) or (isHeader and 22 or 18)
+        TextLabel.Font = isHeader and Enum.Font.SourceSansBold or Enum.Font.SourceSans
+        TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TextLabel.TextWrapped = true
+        TextLabel.LayoutOrder = layoutOrder
+        TextLabel.ZIndex = 102
         
-        if isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]") then
+        if isHeader and (text:match("%[%+%]") or text:match("%[%-%]") or text:match("%[%*%]") or text:match("%[!%]") or text:match("%[%?%]")) then
             TextLabel.BackgroundTransparency = 0
             TextLabel.BackgroundColor3 = SelectedTheme.ElementBackgroundHover
             local HighlightCorner = Instance.new("UICorner")
@@ -350,6 +360,7 @@ function SearchAndChangelogLibrary:CreateChangelogDialog(config)
         TextLabel.Parent = ChangelogScroll
         return TextLabel
     end
+
 
     local originalLabels = {}
     local layoutOrder = 0
