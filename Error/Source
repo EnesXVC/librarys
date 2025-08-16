@@ -6,7 +6,6 @@ local contentText = "Rayfield has encountered an error that is preventing it fro
 local iconId = "104519944497764"
 local buttonText = "Dismiss"
 local position = "center" -- "left", "center", "right"
-local pos_1 = nil
 
 local function protectUI(sGui)
     local function blankfunction(...)
@@ -95,13 +94,12 @@ function ErrorPopup:Create()
     gui.Main.Okay.Interact.Activated:Connect(function()
         gui:Destroy()
     end)
-    gui.Main.Position = pos_1
 if position == "center" then
     gui.Main.Position = UDim2.new(0.5, 0, 0.5, 0)
 elseif position == "left" then
-    gui.Main.Position = UDim2.new(0.5, -500, 0.5, 0)
+    gui.Main.Position = UDim2.new(0.5, -600, 0.5, 0)
 elseif position == "right" then
-    gui.Main.Position = UDim2.new(1, -gui.Main.Size.X.Offset, 0.5, 0)
+    gui.Main.Position = UDim2.new(0.5, 600, 0.5, 0)
 end
     protectUI(gui)
     return gui
@@ -133,10 +131,6 @@ end
 
 function ErrorPopup:SetAssetId(id)
     guiAssetId = id
-end
-
-function ErrorPopup:SetPos(newPos)
-    pos_1 = newPos
 end
 
 return ErrorPopup
