@@ -1,4 +1,5 @@
 local ErrorPopup = {}
+
 local titleText = "Rayfield couldn't start"
 local subtitleText = "Critical Error"
 local contentText = "Rayfield has encountered an error that is preventing it from running properly.\nDevelopers have been notified and more details can be found in console."
@@ -49,7 +50,6 @@ local function protectUI(sGui)
                 cGUIProtect[v] = rPlr.Name
             end)
             cGUIProtect[sGui] = rPlr.Name
-
             local meta = getrawmetatable(game)
             local tostr = meta.__tostring
             setreadonly(meta, false)
