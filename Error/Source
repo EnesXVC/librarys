@@ -86,21 +86,21 @@ end
 
 function ErrorPopup:Create()
     local gui = game:GetObjects("rbxassetid://89663359414810")[1]
-    gui.Main.Title.Text = titleText or titleText
-    gui.Main.Subtitle.Text = subtitleText or gui.Main.Subtitle.Text
-    gui.Main.Content.Text = contentText or gui.Main.Content.Text
+    gui.Main.Title.Text = titleText
+    gui.Main.Subtitle.Text = subtitleText 
+    gui.Main.Content.Text = contentText
     gui.Main.Icon.Image = iconId or "104519944497764"
-    gui.Main.Okay.Title.Text = buttonText or gui.Main.Okay.Title.Text
+    gui.Main.Okay.Title.Text = buttonText
     gui.Main.Okay.Interact.Activated:Connect(function()
         gui:Destroy()
     end)
-    if position == "center" then
-        gui.Main.Position = UDim2.new(0.5, -100, 0.5, -97)
-    elseif position == "left" then
-        gui.Main.Position = UDim2.new(0, 5, 0.5, -97)
-    elseif position == "right" then
-        gui.Main.Position = UDim2.new(1, -205, 0.5, -97)
-    end
+if position == "center" then
+    gui.Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+elseif position == "left" then
+    gui.Main.Position = UDim2.new(0, 5, 0.5, 0)
+elseif position == "right" then
+    gui.Main.Position = UDim2.new(1, -gui.Main.Size.X.Offset, 0.5, 0)
+end
     protectUI(gui)
     return gui
 end
