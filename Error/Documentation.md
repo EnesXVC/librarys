@@ -5,7 +5,7 @@ local ErrorPopup = loadstring(game:HttpGet("https://raw.githubusercontent.com/En
 ## Configure the settings
 ```lua
 ErrorPopup:SetTitle("Rayfield couldn't start")
-ErrorPopup:SetSubtitle("Critical Erro")
+ErrorPopup:SetSubtitle("Critical Error")
 ErrorPopup:SetContent("Rayfield has encountered an error that is preventing it from running properly.\nDevelopers have been notified and more details can be found in console.")
 ErrorPopup:SetIcon("rbxassetid://104519944497764")
 ErrorPopup:SetButtonText("Dismiss")
