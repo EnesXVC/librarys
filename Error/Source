@@ -6,6 +6,7 @@ local contentText = "Rayfield has encountered an error that is preventing it fro
 local iconId = "104519944497764"
 local buttonText = "Dismiss"
 local position = "center" -- "left", "center", "right"
+local pos_1 = nil
 
 local function protectUI(sGui)
     local function blankfunction(...)
@@ -134,8 +135,8 @@ function ErrorPopup:SetAssetId(id)
     guiAssetId = id
 end
 
-function ErrorPopup:SetPos(pos_1)
-    pos_1 = pos_1
+function ErrorPopup:SetPos(newPos)
+    pos_1 = newPos
 end
 
 return ErrorPopup
