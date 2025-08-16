@@ -86,11 +86,11 @@ end
 
 function ErrorPopup:Create()
     local gui = game:GetObjects("rbxassetid://89663359414810")[1]
-    gui.Main.Title.Text = titleText
-    gui.Main.Subtitle.Text = subtitleText
-    gui.Main.Content.Text = contentText
-    gui.Main.Icon.Image = iconId
-    gui.Main.Okay.Title.Text = buttonText
+    gui.Main.Title.Text = titleText or gui.Main.Title.Text
+    gui.Main.Subtitle.Text = subtitleText or gui.Main.Subtitle.Text
+    gui.Main.Content.Text = contentText or gui.Main.Content.Text
+    gui.Main.Icon.Image = iconId or gui.Main.Icon.Image
+    gui.Main.Okay.Title.Text = buttonText or gui.Main.Okay.Title.Text
     gui.Main.Okay.Interact.Activated:Connect(function()
         gui:Destroy()
     end)
