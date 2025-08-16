@@ -97,7 +97,7 @@ function ErrorPopup:Create()
 if position == "center" then
     gui.Main.Position = UDim2.new(0.5, 0, 0.5, 0)
 elseif position == "left" then
-    gui.Main.Position = UDim2.new(0.5, -15, 0.5, 0)
+    gui.Main.Position = UDim2.new(0.5, -1, 0.5, 0)
 elseif position == "right" then
     gui.Main.Position = UDim2.new(1, -gui.Main.Size.X.Offset, 0.5, 0)
 end
