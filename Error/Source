@@ -1,0 +1,136 @@
+local ErrorPopup = {}
+
+local titleText = "Rayfield couldn't start"
+local subtitleText = "Critical Error"
+local contentText = "Rayfield has encountered an error that is preventing it from running properly.\nDevelopers have been notified and more details can be found in console."
+local iconId = "104519944497764"
+local buttonText = "Dismiss"
+local position = "center" -- "left", "center", "right"
+
+local function protectUI(sGui)
+    local function blankfunction(...)
+        return ...
+    end
+    local cloneref = cloneref or blankfunction
+    local function SafeGetService(service)
+        return cloneref(game:GetService(service)) or game:GetService(service)
+    end
+    local cGUI = SafeGetService("CoreGui")
+    local rPlr = SafeGetService("Players"):FindFirstChildWhichIsA("Player")
+    local cGUIProtect = {}
+    local rService = SafeGetService("RunService")
+    local lPlr = SafeGetService("Players").LocalPlayer
+    local function NAProtection(inst, var)
+        if inst then
+            if var then
+                inst[var] = "\0"
+                inst.Archivable = false
+            else
+                inst.Name = "\0"
+                inst.Archivable = false
+            end
+        end
+    end
+    if (get_hidden_gui or gethui) then
+        local hiddenUI = (get_hidden_gui or gethui)
+        NAProtection(sGui)
+        sGui.Parent = hiddenUI()
+        return sGui
+    elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+        NAProtection(sGui)
+        syn.protect_gui(sGui)
+        sGui.Parent = cGUI
+        return sGui
+    elseif cGUI:FindFirstChildWhichIsA("ScreenGui") then
+        pcall(function()
+            for _, v in pairs(sGui:GetDescendants()) do
+                cGUIProtect[v] = rPlr.Name
+            end
+            sGui.DescendantAdded:Connect(function(v)
+                cGUIProtect[v] = rPlr.Name
+            end)
+            cGUIProtect[sGui] = rPlr.Name
+            local meta = getrawmetatable(game)
+            local tostr = meta.__tostring
+            setreadonly(meta, false)
+            meta.__tostring = newcclosure(function(t)
+                if cGUIProtect[t] and not checkcaller() then
+                    return cGUIProtect[t]
+                end
+                return tostr(t)
+            end)
+        end)
+        if not rService:IsStudio() then
+            local newGui = cGUI:FindFirstChildWhichIsA("ScreenGui")
+            newGui.DescendantAdded:Connect(function(v)
+                cGUIProtect[v] = rPlr.Name
+            end)
+            for _, v in pairs(sGui:GetChildren()) do
+                v.Parent = newGui
+            end
+            sGui = newGui
+        end
+        return sGui
+    elseif cGUI then
+        NAProtection(sGui)
+        sGui.Parent = cGUI
+        return sGui
+    elseif lPlr and lPlr:FindFirstChild("PlayerGui") then
+        NAProtection(sGui)
+        sGui.Parent = lPlr:FindFirstChild("PlayerGui")
+        return sGui
+    else
+        return nil
+    end
+end
+
+function ErrorPopup:Create()
+    local gui = game:GetObjects("rbxassetid://89663359414810")[1]
+    gui.Main.Title.Text = titleText
+    gui.Main.Subtitle.Text = subtitleText
+    gui.Main.Content.Text = contentText
+    gui.Main.Icon.Image = iconId
+    gui.Main.Okay.Dismiss.Text = buttonText
+    gui.Main.Okay.Interact.Activated:Connect(function()
+        gui:Destroy()
+    end)
+    if position == "center" then
+        gui.Main.Position = UDim2.new(0.5, -100, 0.5, -97)
+    elseif position == "left" then
+        gui.Main.Position = UDim2.new(0, 5, 0.5, -97)
+    elseif position == "right" then
+        gui.Main.Position = UDim2.new(1, -205, 0.5, -97)
+    end
+    protectUI(gui)
+    return gui
+end
+
+function ErrorPopup:SetTitle(text)
+    titleText = text
+end
+
+function ErrorPopup:SetSubtitle(text)
+    subtitleText = text
+end
+
+function ErrorPopup:SetContent(text)
+    contentText = text
+end
+
+function ErrorPopup:SetIcon(id)
+    iconId = id
+end
+
+function ErrorPopup:SetButtonText(text)
+    buttonText = text
+end
+
+function ErrorPopup:SetPosition(pos)
+    position = pos -- "left", "center", "right"
+end
+
+function ErrorPopup:SetAssetId(id)
+    guiAssetId = id
+end
+
+return ErrorPopup
