@@ -90,7 +90,7 @@ function ErrorPopup:Create()
     gui.Main.Subtitle.Text = subtitleText
     gui.Main.Content.Text = contentText
     gui.Main.Icon.Image = iconId
-    gui.Main.Okay.Dismiss.Text = buttonText
+    gui.Main.Okay.Title.Text = buttonText
     gui.Main.Okay.Interact.Activated:Connect(function()
         gui:Destroy()
     end)
