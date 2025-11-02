@@ -46,6 +46,18 @@ local SelectedTheme = {
 -- // rayfield notify
 local RayfieldLibrary = {}
 
+-- // luna notify
+local Luna = {
+	Folder = "Luna",
+	Options = {},
+	ThemeGradient = ColorSequence.new{
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(117, 164, 206)),
+		ColorSequenceKeypoint.new(0.50, Color3.fromRGB(123, 201, 201)),
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(224, 138, 175))
+	}
+}
+
+--helper func
 local function protectUI(sGui)
     if not sGui then return end
     
@@ -69,6 +81,9 @@ local function getAssetUri(id)
 		return "rbxassetid://0"
 	end
 end
+
+
+-- ________RAYFIELDDDDDDDDDDDDDD_____
 
 local Rayfield = Instance.new("ScreenGui")
 Rayfield.Name = "Rayfield"
@@ -248,69 +263,215 @@ function RayfieldLibrary:Notify(data)
 	end)
 end
 
+--______LUNAAAA____
+
+local LunaUI = Instance.new("ScreenGui")
+LunaUI.Name = "Luna UI"
+LunaUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+LunaUI.DisplayOrder = 9999
+protectUI(LunaUI)
+
+local Notifications = Instance.new("Frame")
+Notifications.Name = "Notifications"
+Notifications.Parent = LunaUI
+Notifications.AnchorPoint = Vector2.new(1, 1)
+Notifications.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Notifications.BackgroundTransparency = 1.000
+Notifications.BorderSizePixel = 0
+Notifications.Position = UDim2.new(1, -20, 1, -20)
+Notifications.Size = UDim2.new(0, 290, 0, 800)
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = Notifications
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout.Padding = UDim.new(0, 8)
+
+local Template = Instance.new("Frame")
+Template.Name = "Template"
+Template.Parent = Notifications
+Template.BackgroundColor3 = Color3.fromRGB(32, 30, 38)
+Template.BackgroundTransparency = 0.500
+Template.BorderSizePixel = 0
+Template.Size = UDim2.new(1, 0, 0, 0)
+Template.Visible = false
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 9)
+UICorner.Parent = Template
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Name = "UIStroke"
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Transparency = 1
+UIStroke.Thickness = 1
+UIStroke.Parent = Template
+
+local Icon = Instance.new("ImageLabel")
+Icon.Name = "Icon"
+Icon.Parent = Template
+Icon.AnchorPoint = Vector2.new(0, 0.5)
+Icon.BackgroundColor3 = Color3.fromRGB(209, 209, 209)
+Icon.BackgroundTransparency = 1.000
+Icon.BorderSizePixel = 0
+Icon.Position = UDim2.new(0, 18, 0.5, 0)
+Icon.Size = UDim2.new(0, 24, 0, 24)
+Icon.Image = "rbxassetid://0"
+
+local IconGradient = Instance.new("UIGradient")
+IconGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(171, 171, 171))
+}
+IconGradient.Rotation = 45
+IconGradient.Parent = Icon
+
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = Template
+Title.BackgroundTransparency = 1.000
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(0, 56, 0, 11)
+Title.Size = UDim2.new(0.979548514, -80, 0, 16)
+Title.ZIndex = 105
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Notification System"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 16.000
+Title.TextWrapped = true
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local TitleGradient = Instance.new("UIGradient")
+TitleGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(0.49, Color3.fromRGB(235, 235, 235)),
+	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(171, 171, 171))
+}
+TitleGradient.Rotation = 78
+TitleGradient.Parent = Title
+
+local Description = Instance.new("TextLabel")
+Description.Name = "Description"
+Description.Parent = Template
+Description.BackgroundTransparency = 1.000
+Description.BorderSizePixel = 0
+Description.Position = UDim2.new(0, 56, 0, 32)
+Description.Size = UDim2.new(1, -80, 1, -50)
+Description.ZIndex = 105
+Description.Font = Enum.Font.Gotham
+Description.Text = "This Is A Preview Of Luna's Dynamic Notification System"
+Description.TextColor3 = Color3.fromRGB(255, 255, 255)
+Description.TextSize = 14.000
+Description.TextTransparency = 0.350
+Description.TextWrapped = true
+Description.TextXAlignment = Enum.TextXAlignment.Left
+Description.TextYAlignment = Enum.TextYAlignment.Top
+
+local DescGradient = Instance.new("UIGradient")
+DescGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(0.49, Color3.fromRGB(235, 235, 235)),
+	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(209, 209, 209))
+}
+DescGradient.Rotation = 90
+DescGradient.Parent = Description
+
+local Shadow = Instance.new("ImageLabel")
+Shadow.Name = "Shadow"
+Shadow.Parent = Template
+Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+Shadow.BackgroundTransparency = 1.000
+Shadow.BorderSizePixel = 0
+Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+Shadow.Size = UDim2.new(1.17999995, 0, 1.92200005, 0)
+Shadow.ZIndex = 0
+Shadow.Image = "rbxassetid://3523728077"
+Shadow.ImageColor3 = Color3.fromRGB(26, 25, 31)
+Shadow.ImageTransparency = 0.500
+Shadow.ScaleType = Enum.ScaleType.Slice
+Shadow.SliceCenter = Rect.new(61, 4, 429, 100)
+
+function Luna:Notification(data)
+	task.spawn(function()
+		local newNotification = Template:Clone()
+		newNotification.Name = data.Title or "Missing Title"
+		newNotification.Parent = Notifications
+		newNotification.LayoutOrder = #Notifications:GetChildren()
+		newNotification.Visible = false
+
+		newNotification.Title.Text = data.Title or "Missing Title"
+		newNotification.Description.Text = data.Content or "Missing or Unknown Content"
+		
+		if data.Image then
+			newNotification.Icon.Image = getAssetUri(data.Image)
+		else
+			newNotification.Icon.Image = "rbxassetid://0"
+		end
+
+		newNotification.BackgroundTransparency = 1
+		newNotification.Title.TextTransparency = 1
+		newNotification.Description.TextTransparency = 1
+		newNotification.UIStroke.Transparency = 1
+		newNotification.Shadow.ImageTransparency = 1
+		newNotification.Icon.ImageTransparency = 1
+		newNotification.Icon.BackgroundTransparency = 1
+
+		task.wait()
+
+		newNotification.Size = UDim2.new(1, 0, 0, -UIListLayout.Padding.Offset)
+
+		newNotification.Icon.Size = UDim2.new(0, 28, 0, 28)
+		newNotification.Icon.Position = UDim2.new(0, 16, 0.5, -1)
+
+		newNotification.Visible = true
+
+		newNotification.Description.Size = UDim2.new(1, -65, 0, math.huge)
+		local bounds = newNotification.Description.TextBounds.Y + 55
+		newNotification.Description.Size = UDim2.new(1, -65, 0, bounds - 35)
+		newNotification.Size = UDim2.new(1, 0, 0, -UIListLayout.Padding.Offset)
+		
+		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
+
+		task.wait(0.15)
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.45}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+
+		task.wait(0.05)
+
+		TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+
+		task.wait(0.05)
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
+
+		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
+		task.wait(data.Duration or waitDuration)
+
+		newNotification.Icon.Visible = false
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+
+		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
+
+		task.wait(1)
+
+		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, -UIListLayout.Padding.Offset)}):Play()
+
+		newNotification.Visible = false
+		newNotification:Destroy()
+	end)
+end
+
 function SearchAndChangelogLibrary:Notify(data)
 if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
 RayfieldLibrary:Notify(data)
 else
-local notificationGui = Instance.new("ScreenGui")
-protectUI(notificationGui)
-        
-        local notification = Instance.new("Frame")
-        notification.Size = UDim2.new(0, 300, 0, 60)
-        notification.Position = UDim2.new(1, 10, 1, -70)
-        notification.AnchorPoint = Vector2.new(1, 1)
-        notification.BackgroundColor3 = SelectedTheme.Background
-        notification.BackgroundTransparency = 0.5
-        notification.BorderSizePixel = 0
-        notification.ZIndex = 100
-        notification.Parent = notificationGui
-        
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 6)
-        corner.Parent = notification
-        
-        local title = Instance.new("TextLabel")
-        title.Text = data.Title or "Notification"
-        title.TextColor3 = SelectedTheme.TextColor
-        title.TextSize = 16
-        title.Font = Enum.Font.SourceSansBold
-        title.Size = UDim2.new(1, -40, 0, 20)
-        title.Position = UDim2.new(0, 40, 0, 10)
-        title.BackgroundTransparency = 1
-        title.TextXAlignment = Enum.TextXAlignment.Left
-        title.ZIndex = 101
-        title.Parent = notification
-        
-        local content = Instance.new("TextLabel")
-        content.Text = data.Content or ""
-        content.TextColor3 = SelectedTheme.TextColor
-        content.TextTransparency = 0.35
-        content.TextSize = 14
-        content.Font = Enum.Font.SourceSans
-        content.Size = UDim2.new(1, -40, 0, 20)
-        content.Position = UDim2.new(0, 40, 0, 30)
-        content.BackgroundTransparency = 1
-        content.TextXAlignment = Enum.TextXAlignment.Left
-        content.ZIndex = 101
-        content.Parent = notification
-        
-        local icon = Instance.new("ImageLabel")
-        icon.Image = "rbxassetid://"..tostring(data.Image or 10723346871)
-        icon.Size = UDim2.new(0, 24, 0, 24)
-        icon.Position = UDim2.new(0, 10, 0, 10)
-        icon.BackgroundTransparency = 1
-        icon.ZIndex = 102
-        icon.Parent = notification
-        
-        notification.Position = UDim2.new(1, 310, 1, -70)
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, -10, 1, -70)}):Play()
-        
-        task.wait(data.Duration or 3)
-        
-        TweenService:Create(notification, TweenInfo.new(0.3), {Position = UDim2.new(1, 310, 1, -70)}):Play()
-        task.wait(0.3)
-        notificationGui:Destroy()
-    end
+Luna:Notification(data)
 end
 
 function SearchAndChangelogLibrary:CreateChangelogDialog(config)
