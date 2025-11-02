@@ -468,10 +468,11 @@ function Luna:Notification(data)
 end
 
 function SearchAndChangelogLibrary:Notify(data)
-if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
-RayfieldLibrary:Notify(data)
-else
-Luna:Notification(data)
+    if not self.NotifyLibrary or string.lower(self.NotifyLibrary) == "rayfield" then
+        RayfieldLibrary:Notify(data)
+    else
+        Luna:Notification(data)
+    end
 end
 
 function SearchAndChangelogLibrary:CreateChangelogDialog(config)
