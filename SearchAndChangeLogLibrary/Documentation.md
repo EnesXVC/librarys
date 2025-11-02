@@ -7,7 +7,7 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EnesX
 local dialog = Library:CreateChangelogDialog({
     Title = "My Changelog",
     ChangelogText = [[
-    Version: 1.0
+    Version: 1.5
     New Features:
     - Library Build Version 1.5
     - Nofications get an update
