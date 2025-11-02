@@ -6,12 +6,11 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EnesX
 ```lua
 local dialog = Library:CreateChangelogDialog({
     Title = "My Changelog",
--- If you are creating a supported games list, please use the following format: ChangelogText = "1. Game\n2. Game\n3. Game\n... etc."
     ChangelogText = [[
     Version: 1.0
     New Features:
-    - Library Build Version 1.0
-    - Nofications may get an update soon
+    - Library Build Version 1.5
+    - Nofications get an update
     ]],
     Search = true, --true , false
     NotifyLibrary = "Rayfield", -- "Luna" or "Rayfield"
@@ -49,4 +48,3 @@ local dialog = Library:CreateChangelogDialog({
 ### Credits:
 - [EnesXVC](https://github.com/EnesXVC) (Library)
 - [SiriusSoftware](https://github.com/SiriusSoftwareLtd) (Gui)
-- [aemos21](https://github.com/aemos2) (Gui)
