@@ -89,7 +89,7 @@ local Rayfield = Instance.new("ScreenGui")
 Rayfield.Name = "Rayfield"
 Rayfield.DisplayOrder = 100
 Rayfield.ResetOnSpawn = false
-Rayfield.Parent = SearchAndChangelogLibrary
+Rayfield.Parent = protectUI(Rayfield)
 
 local Notifications = Instance.new("Frame")
 Notifications.Name = "Notifications"
@@ -269,7 +269,7 @@ local LunaUI = Instance.new("ScreenGui")
 LunaUI.Name = "Luna UI"
 LunaUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 LunaUI.DisplayOrder = 9999
-LunaUI.Parent = SearchAndChangelogLibrary
+LunaUI.Parent = protectUI(LunaUI)
 
 local Notifications_2 = Instance.new("Frame")
 Notifications_2.Name = "Notifications_2"
