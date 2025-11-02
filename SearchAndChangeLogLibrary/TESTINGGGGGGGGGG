@@ -89,7 +89,7 @@ local Rayfield = Instance.new("ScreenGui")
 Rayfield.Name = "Rayfield"
 Rayfield.DisplayOrder = 100
 Rayfield.ResetOnSpawn = false
-protectUI(Rayfield)
+Rayfield.Parent = SearchAndChangelogLibrary
 
 local Notifications = Instance.new("Frame")
 Notifications.Name = "Notifications"
@@ -269,128 +269,128 @@ local LunaUI = Instance.new("ScreenGui")
 LunaUI.Name = "Luna UI"
 LunaUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 LunaUI.DisplayOrder = 9999
-protectUI(LunaUI)
+LunaUI.Parent = SearchAndChangelogLibrary
 
-local Notifications = Instance.new("Frame")
-Notifications.Name = "Notifications"
-Notifications.Parent = LunaUI
-Notifications.AnchorPoint = Vector2.new(1, 1)
-Notifications.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Notifications.BackgroundTransparency = 1.000
-Notifications.BorderSizePixel = 0
-Notifications.Position = UDim2.new(1, -20, 1, -20)
-Notifications.Size = UDim2.new(0, 290, 0, 800)
+local Notifications_2 = Instance.new("Frame")
+Notifications_2.Name = "Notifications_2"
+Notifications_2.Parent = LunaUI
+Notifications_2.AnchorPoint = Vector2.new(1, 1)
+Notifications_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Notifications_2.BackgroundTransparency = 1.000
+Notifications_2.BorderSizePixel = 0
+Notifications_2.Position = UDim2.new(1, -20, 1, -20)
+Notifications_2.Size = UDim2.new(0, 290, 0, 800)
 
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = Notifications
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-UIListLayout.Padding = UDim.new(0, 8)
+local UIListLayout_2 = Instance.new("UIListLayout")
+UIListLayout_2.Parent = Notifications_2
+UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout_2.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout_2.Padding = UDim.new(0, 8)
 
-local Template = Instance.new("Frame")
-Template.Name = "Template"
-Template.Parent = Notifications
-Template.BackgroundColor3 = Color3.fromRGB(32, 30, 38)
-Template.BackgroundTransparency = 0.500
-Template.BorderSizePixel = 0
-Template.Size = UDim2.new(1, 0, 0, 0)
-Template.Visible = false
+local Template_2 = Instance.new("Frame")
+Template_2.Name = "Template_2"
+Template_2.Parent = Notifications_2
+Template_2.BackgroundColor3 = Color3.fromRGB(32, 30, 38)
+Template_2.BackgroundTransparency = 0.500
+Template_2.BorderSizePixel = 0
+Template_2.Size = UDim2.new(1, 0, 0, 0)
+Template_2.Visible = false
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 9)
-UICorner.Parent = Template
+local UICorner_2 = Instance.new("UICorner")
+UICorner_2.CornerRadius = UDim.new(0, 9)
+UICorner_2.Parent = Template_2
 
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Name = "UIStroke"
-UIStroke.Color = Color3.fromRGB(255, 255, 255)
-UIStroke.Transparency = 1
-UIStroke.Thickness = 1
-UIStroke.Parent = Template
+local UIStroke_2 = Instance.new("UIStroke")
+UIStroke_2.Name = "UIStroke_2"
+UIStroke_2.Color = Color3.fromRGB(255, 255, 255)
+UIStroke_2.Transparency = 1
+UIStroke_2.Thickness = 1
+UIStroke_2.Parent = Template_2
 
-local Icon = Instance.new("ImageLabel")
-Icon.Name = "Icon"
-Icon.Parent = Template
-Icon.AnchorPoint = Vector2.new(0, 0.5)
-Icon.BackgroundColor3 = Color3.fromRGB(209, 209, 209)
-Icon.BackgroundTransparency = 1.000
-Icon.BorderSizePixel = 0
-Icon.Position = UDim2.new(0, 18, 0.5, 0)
-Icon.Size = UDim2.new(0, 24, 0, 24)
-Icon.Image = "rbxassetid://0"
+local Icon_2 = Instance.new("ImageLabel")
+Icon_2.Name = "Icon_2"
+Icon_2.Parent = Template_2
+Icon_2.AnchorPoint = Vector2.new(0, 0.5)
+Icon_2.BackgroundColor3 = Color3.fromRGB(209, 209, 209)
+Icon_2.BackgroundTransparency = 1
+Icon_2.BorderSizePixel = 0
+Icon_2.Position = UDim2.new(0, 18, 0.5, 0)
+Icon_2.Size = UDim2.new(0, 24, 0, 24)
+Icon_2.Image = "rbxassetid://0"
 
-local IconGradient = Instance.new("UIGradient")
-IconGradient.Color = ColorSequence.new{
+local IconGradient_2 = Instance.new("UIGradient")
+IconGradient_2.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
 	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(171, 171, 171))
 }
-IconGradient.Rotation = 45
-IconGradient.Parent = Icon
+IconGradient_2.Rotation = 45
+IconGradient_2.Parent = Icon_2
 
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Parent = Template
-Title.BackgroundTransparency = 1.000
-Title.BorderSizePixel = 0
-Title.Position = UDim2.new(0, 56, 0, 11)
-Title.Size = UDim2.new(0.979548514, -80, 0, 16)
-Title.ZIndex = 105
-Title.Font = Enum.Font.GothamBold
-Title.Text = "Notification System"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 16.000
-Title.TextWrapped = true
-Title.TextXAlignment = Enum.TextXAlignment.Left
+local Title_2 = Instance.new("TextLabel")
+Title_2.Name = "Title_2"
+Title_2.Parent = Template_2
+Title_2.BackgroundTransparency = 1
+Title_2.BorderSizePixel = 0
+Title_2.Position = UDim2.new(0, 56, 0, 11)
+Title_2.Size = UDim2.new(0.979548514, -80, 0, 16)
+Title_2.ZIndex = 105
+Title_2.Font = Enum.Font.GothamBold
+Title_2.Text = "Notification System"
+Title_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title_2.TextSize = 16
+Title_2.TextWrapped = true
+Title_2.TextXAlignment = Enum.TextXAlignment.Left
 
-local TitleGradient = Instance.new("UIGradient")
-TitleGradient.Color = ColorSequence.new{
+local TitleGradient_2 = Instance.new("UIGradient")
+TitleGradient_2.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
 	ColorSequenceKeypoint.new(0.49, Color3.fromRGB(235, 235, 235)),
 	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(171, 171, 171))
 }
-TitleGradient.Rotation = 78
-TitleGradient.Parent = Title
+TitleGradient_2.Rotation = 78
+TitleGradient_2.Parent = Title_2
 
-local Description = Instance.new("TextLabel")
-Description.Name = "Description"
-Description.Parent = Template
-Description.BackgroundTransparency = 1.000
-Description.BorderSizePixel = 0
-Description.Position = UDim2.new(0, 56, 0, 32)
-Description.Size = UDim2.new(1, -80, 1, -50)
-Description.ZIndex = 105
-Description.Font = Enum.Font.Gotham
-Description.Text = "This Is A Preview Of Luna's Dynamic Notification System"
-Description.TextColor3 = Color3.fromRGB(255, 255, 255)
-Description.TextSize = 14.000
-Description.TextTransparency = 0.350
-Description.TextWrapped = true
-Description.TextXAlignment = Enum.TextXAlignment.Left
-Description.TextYAlignment = Enum.TextYAlignment.Top
+local Description_2 = Instance.new("TextLabel")
+Description_2.Name = "Description_2"
+Description_2.Parent = Template_2
+Description_2.BackgroundTransparency = 1
+Description_2.BorderSizePixel = 0
+Description_2.Position = UDim2.new(0, 56, 0, 32)
+Description_2.Size = UDim2.new(1, -80, 1, -50)
+Description_2.ZIndex = 105
+Description_2.Font = Enum.Font.Gotham
+Description_2.Text = "This Is A Preview Of Luna's Dynamic Notification System"
+Description_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Description_2.TextSize = 14
+Description_2.TextTransparency = 0.350
+Description_2.TextWrapped = true
+Description_2.TextXAlignment = Enum.TextXAlignment.Left
+Description_2.TextYAlignment = Enum.TextYAlignment.Top
 
-local DescGradient = Instance.new("UIGradient")
-DescGradient.Color = ColorSequence.new{
+local DescGradient_2 = Instance.new("UIGradient")
+DescGradient_2.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
 	ColorSequenceKeypoint.new(0.49, Color3.fromRGB(235, 235, 235)),
 	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(209, 209, 209))
 }
-DescGradient.Rotation = 90
-DescGradient.Parent = Description
+DescGradient_2.Rotation = 90
+DescGradient_2.Parent = Description_2
 
-local Shadow = Instance.new("ImageLabel")
-Shadow.Name = "Shadow"
-Shadow.Parent = Template
-Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-Shadow.BackgroundTransparency = 1.000
-Shadow.BorderSizePixel = 0
-Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-Shadow.Size = UDim2.new(1.17999995, 0, 1.92200005, 0)
-Shadow.ZIndex = 0
-Shadow.Image = "rbxassetid://3523728077"
-Shadow.ImageColor3 = Color3.fromRGB(26, 25, 31)
-Shadow.ImageTransparency = 0.500
-Shadow.ScaleType = Enum.ScaleType.Slice
-Shadow.SliceCenter = Rect.new(61, 4, 429, 100)
+local Shadow_2 = Instance.new("ImageLabel")
+Shadow_2.Name = "Shadow_2"
+Shadow_2.Parent = Template_2
+Shadow_2.AnchorPoint = Vector2.new(0.5, 0.5)
+Shadow_2.BackgroundTransparency = 1
+Shadow_2.BorderSizePixel = 0
+Shadow_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+Shadow_2.Size = UDim2.new(1.18, 0, 1.92, 0)
+Shadow_2.ZIndex = 0
+Shadow_2.Image = "rbxassetid://3523728077"
+Shadow_2.ImageColor3 = Color3.fromRGB(26, 25, 31)
+Shadow_2.ImageTransparency = 0.500
+Shadow_2.ScaleType = Enum.ScaleType.Slice
+Shadow_2.SliceCenter = Rect.new(61, 4, 429, 100)
 
 function Luna:Notification(data)
 	task.spawn(function()
