@@ -10,7 +10,7 @@ local dialog = Library:CreateChangelogDialog({
     Version: 1.5
     New Features:
     - Library Build Version 1.5
-    - Nofications get an update
+    - Notifications updated
     ]],
     Search = true, --true , false
     NotifyLibrary = "Rayfield", -- "Luna" or "Rayfield"
