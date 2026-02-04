@@ -1,8 +1,12 @@
+-- https://github.com/EnesXVC/librarys/blob/main/DiscordPopup/Documentation.md
+-- ui by https://github.com/hellohellohell012321
+-- library by https://github.com/EnesXVC
+
 local DiscordPopup = {}
 
 local copyButtonText = "copy link"
 local closeButtonText = "fuck off"
-local discordLink = "https://discord.gg/MP9nZgEeQD"
+local discordLink = "https://discord.gg/rTw5M8dRXN"
 local labelText = "join the discord :3"
 local image1Id = "rbxassetid://18817097052"
 local image2Id = "rbxassetid://18817519330"
